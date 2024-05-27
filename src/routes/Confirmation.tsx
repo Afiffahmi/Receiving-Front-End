@@ -6,7 +6,7 @@ import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
-
+import Barcode from 'react-barcode';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
@@ -86,7 +86,11 @@ export default function JoyOrderDashboardTemplate() {
             <Typography level="h2" component="h1">
               Receive Info 
             </Typography>
-
+            <Box>
+              
+            </Box>
+            <Barcode value="start" height={40}/>
+            <Barcode value="complete" height={40}/>
           </Box>
           <ReceiveInfo />
           <OrderList />

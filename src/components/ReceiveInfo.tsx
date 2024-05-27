@@ -5,7 +5,7 @@ import { ColorPaletteProp } from "@mui/joy/styles";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Chip from "@mui/joy/Chip";
+import Barcode from 'react-barcode';
 import Divider from "@mui/joy/Divider";
 import Link from "@mui/joy/Link";
 import Input from "@mui/joy/Input";
@@ -143,6 +143,7 @@ export default function OrderTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+  const textInputRef = React.useRef<HTMLInputElement>(null);
   const [rows, setRows] = React.useState<Receive[]>([{
     id: "",
     receiveID: 0,
@@ -176,6 +177,9 @@ export default function OrderTable() {
   const [total, setTotal] = React.useState(0);
   const [scan , setScan] = React.useState(0);
   const [itemNo, setItemNo] = React.useState('');
+  const [input, setInput] = React.useState('');
+  const [qty, setQty] = React.useState(0);
+  const[focus,setFocus] = React.useState(true);
 
   const[active, setActive] = React.useState(true);
   const[complete, setComplete] = React.useState(false);
@@ -264,46 +268,61 @@ export default function OrderTable() {
     navigate('/scan',{replace:true,state:{...item,itemNo: itemNo, total: total,prev_qty: scan}})
   }
 
-  // const handleManual = () => {
-  //   if(input === itemNo && item.total >= scan + Number(item.qty)){
-  //     setScan(scan + Number(item.qty));
-  //   }else if( item.total < scan + Number(item.qty)){
-  //     toast.error('Quantity exceed actual receiving quantity', {
-  //       position: "bottom-right",
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       theme: "light",
-  //       transition: Bounce,
-  //     });
-  //   }else if(scan == item.total){
-  //     toast.error('Scanned quantity completed', {
-  //       position: "bottom-right",
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       theme: "light",
-  //       transition: Bounce,
-  //     });
-  //   }else if(item.scan !== itemNo){
-      
-  //     toast.error('Invalid Part No', {
-  //       position: "bottom-right",
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       theme: "light",
-  //       transition: Bounce,
-  //     });
-   
-  //   }
-  //   setInput('');
-  //   setQty(0);
-  // }
+  const handleManual = () => {
+    if(input == itemNo && total >= scan + Number(qty)){
+      setScan(scan + Number(qty));
+ 
+    }else if( total < scan + Number(qty)){
+      toast.error('Quantity exceed actual receiving quantity', {
+        position: "bottom-right",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
 
+    }else if(scan == total){
+      toast.error('Scanned quantity completed', {
+        position: "bottom-right",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
+
+    }else if(input !== itemNo){
+      
+      toast.error('Invalid Part No', {
+        position: "bottom-right",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
+   
+    }
+    setInput('');
+    setQty(0);
+  }
+  const handleInput = (input:string) =>{
+    setInput(input);
+
+    if(input == 'complete' ){
+      setOpen(true);
+      setInput('');
+    }else if(input == 'reset'){
+    setScan(0);
+    setInput('');
+  }else if(input == 'start'){
+    handleScanner()
+  }
+  }
   const handleReceive = () => {
     setOpen(true);
   }
@@ -659,37 +678,47 @@ export default function OrderTable() {
            
            
           </CardContent>
+          <Typography level="body-md">Remain Qty:</Typography>
+          <Avatar><Typography level="title-lg">{total - scan}</Typography>
+            </Avatar>
           <Typography level="body-md">Total item:</Typography>
-          <Typography level="h2">{total}<Typography level='body-md'>pcs</Typography></Typography>
+          <Avatar><Typography level="title-sm">{total}</Typography></Avatar>
+          
         </CardContent>
-
+              
         <CardActions>
 
 
           
-          {/* <Input
+          <Input
           variant='soft'
           value={input}
-          onChange={(e) => {handleChangeFirstInput(e)}}
+          onChange={(e) => {handleInput(e.target.value)}}
           ref={textInputRef}
-          autoFocus={isFirstInput}
+          autoFocus={focus}
 
           />
 
           <Input
           type='number'
           variant='soft'
+
           value={qty}
-          ref={textInputRef2}
-          onChange={(e) => {handleChangeSecondInput(e)}}
-          /> */}
-       
-          <Button onClick={handleScanner} variant="solid" size="sm">
-            SCAN
+          autoFocus={!focus}
+          onChange={(e) => {if(Number(e.target.value) >= 0 )setQty(Number(e.target.value))}}
+          />
+
+
+<Button onClick={handleManual} variant="solid" size="sm">
+            Next
           </Button>
+       
+          {/* <Button onClick={handleScanner} variant="solid" size="sm">
+            Scan
+          </Button> */}
         </CardActions>
         <Button color='warning' onClick={handleReceive}>
-          RECEIVED
+          Received
         </Button>
       </Card>
     </React.Fragment>

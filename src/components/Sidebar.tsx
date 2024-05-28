@@ -23,6 +23,7 @@ import {useNavigate,Link} from 'react-router-dom';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
+import { Chip } from '@mui/joy';
 
 function Toggler({
   defaultExpanded = false,
@@ -136,7 +137,7 @@ export default function Sidebar() {
         >
         
 
-          <ListItem component={Link} to='/dashboard'>
+          <ListItem component={Link} to='/dashboard' sx={{marginTop:2}} >
             <ListItemButton>
               <DashboardRoundedIcon />
               <ListItemContent>
@@ -145,6 +146,7 @@ export default function Sidebar() {
             </ListItemButton>
           </ListItem>
 
+          <Chip sx={{marginTop:2}} color='success' variant='soft'>Receive</Chip>
           <ListItem component={Link} to='/selection'>
             <ListItemButton>
               <LocalShippingIcon />
@@ -181,14 +183,43 @@ export default function Sidebar() {
               </List>
             </Toggler>
           </ListItem>
-
-          <ListItem component={Link} to='/scan'>
+          <Chip sx={{marginTop:2}} color='warning' variant='soft'>Invoice</Chip>
+          <ListItem component={Link} to='/scan' >
+            
             <ListItemButton>
               <DocumentScannerIcon />
               <ListItemContent>
                 <Typography level="title-sm">Scan Invoice</Typography>
               </ListItemContent>
             </ListItemButton>
+          </ListItem>
+
+          <ListItem nested >
+            <Toggler
+              renderToggle={({ open, setOpen }) => (
+                <ListItemButton onClick={() => setOpen(!open)}>
+                  <AssignmentRoundedIcon />
+                  <ListItemContent>
+                    <Typography level="title-sm">Scanning Info</Typography>
+                  </ListItemContent>
+                  <KeyboardArrowDownIcon
+                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
+                  />
+                </ListItemButton>
+              )}
+            >
+              <List sx={{ gap: 0.5 }}>
+                <ListItem sx={{ mt: 0.5 }}>
+                  <ListItemButton>Pending Invoice Scanning</ListItemButton>
+                </ListItem>
+                <ListItem component={Link} to='/transaction'>
+                  <ListItemButton>Pending Invoice Scanning</ListItemButton>
+                </ListItem>
+                <ListItem component={Link} to='/complete'>
+                  <ListItemButton>Transaction history</ListItemButton>
+                </ListItem>
+              </List>
+            </Toggler>
           </ListItem>
 
         </List>

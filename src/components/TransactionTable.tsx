@@ -199,9 +199,7 @@ React.useEffect(() => {
                 <AccordionSummary>
                 
               <tr>
-                <td style={{ textAlign: 'center', width: 120 }}>
-                 <Chip color='warning'>Pending</Chip>
-                </td>
+                
                 <td>
                   <Typography level='title-sm'>Ref No</Typography>
                   <Typography level="body-xs">{row.RefNo}</Typography>
@@ -234,9 +232,11 @@ React.useEffect(() => {
                   <Typography level="body-xs">{row.JOCPlanLot}</Typography>
                 </td>
                 <td style={{width:180}}>
-                  <Chip color='danger'>Remain Qty : {row.Qty}</Chip>
+                  <Chip color='danger' variant='outlined' size='sm'>Remain Qty : {row.Qty}</Chip>
                 </td>
-
+                <td style={{ textAlign: 'center', width: 120 }}>
+                 <Chip color='warning' >Pending</Chip>
+                </td>
               </tr>
              
               </AccordionSummary>

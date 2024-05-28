@@ -238,9 +238,7 @@ const handleSelected = () => {
                 <AccordionSummary>
                 
               <tr>
-                <td style={{ textAlign: 'center', width: 120 }}>
-                 <Chip color='success'>Complete</Chip>
-                </td>
+                
                 <td>
                   <Typography level='title-sm'>Ref No</Typography>
                   <Typography level="body-xs">{row.RefNo}</Typography>
@@ -271,6 +269,9 @@ const handleSelected = () => {
                 <td>
                 <Typography level='title-sm'>Plan Lot</Typography>
                   <Typography level="body-xs">{row.JOCPlanLot}</Typography>
+                </td>
+                <td style={{ textAlign: 'center', width: 120 }}>
+                 <Chip color='success'>Complete</Chip>
                 </td>
               </tr>
              

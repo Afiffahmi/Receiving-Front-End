@@ -25,7 +25,7 @@ const Scanner = () => {
     }
     window.setTimeout(() => {
     navigate('/receiveinfo',{state: {...item,qty:qty},replace:true})
-  },2000)
+  },2500)
   }
 
     

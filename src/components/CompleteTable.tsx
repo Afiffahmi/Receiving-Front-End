@@ -121,9 +121,6 @@ React.useEffect(() => {
   fetchData();
 }, []);
 
-const handleSelected = () => {
-  console.log(selected);
-}
   const renderFilters = () => (
     <React.Fragment>
       <FormControl size="sm">

@@ -7,6 +7,8 @@ import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import Link from "@mui/joy/Link";
 import Typography from "@mui/joy/Typography";
 import { useLocation, Link as RouteLink } from "react-router-dom";
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
@@ -30,6 +32,9 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 
 
+
+
+
 const Item = styled(Sheet)(({ theme }) => ({
   backgroundColor:
     theme.palette.mode === "dark" ? theme.palette.background.level1 : "#fff",
@@ -40,23 +45,36 @@ const Item = styled(Sheet)(({ theme }) => ({
 }));
 
 export interface Root {
-  data: Daum[];
+  data: Daum[]
+  supplier: Supplier
+  today: string
 }
 
 export interface Daum {
-  Date: string;
-  Count: number;
+  Date: string
+  Count: number
+}
+
+export interface Supplier {
+  labels: string[]
+  datasets: Dataset[]
+}
+
+export interface Dataset {
+  data: number[]
 }
 
 export default function JoyOrderDashboardTemplate() {
   const [rows, setRows] = React.useState<Daum[]>([]);
+  const [supplier, setSupplier] = React.useState<Supplier>();
+  ChartJS.register(ArcElement, Tooltip, Legend);
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get("/api/countItem.php");
         setRows(response.data.data);
-        console.log(response.data);
+        setSupplier(response.data.supplier);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -64,6 +82,29 @@ export default function JoyOrderDashboardTemplate() {
 
     fetchData();
   }, []);
+
+  const chartData = {
+    labels: [''],
+    datasets: [
+        {
+            data: [],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            borderColor: '#fff', // Optional: Color for the borders of slices
+        },
+    ],
+  };
+
+ 
+  
+  
+  const options = {
+    title: {
+        display: true,
+        text: 'Pie Chart Title',
+    },
+    maintainAspectRatio: false, // Adjust the chart's width based on container size
+    responsive: true, // Enable responsiveness for different screen sizes
+  };
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -134,7 +175,7 @@ export default function JoyOrderDashboardTemplate() {
           <Grid container spacing={2} sx={{ flexGrow: 1 }} >
             <Grid xs={4} >
               <Item>
-                <Card variant="soft" sx={{ width: 320 }}color='warning'>
+                <Card>
                   <CardOverflow>
                     <AspectRatio ratio="2" sx={{ padding: 1 }}>
                     <img src='https://static.wixstatic.com/media/cb773a_33b784a330d4441abbee8dec56ffb840~mv2.gif'/>
@@ -223,6 +264,18 @@ export default function JoyOrderDashboardTemplate() {
                     </Box>
                   ))}
                 </Card>
+              </Item>
+            </Grid>
+            
+
+                  
+            <Grid xs={4} >
+              <Item>
+                <Card>
+                  
+                <Pie data={supplier || chartData} options={options} />
+                </Card>
+              
               </Item>
             </Grid>
             <Grid xs={4} >

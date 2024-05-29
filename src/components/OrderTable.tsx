@@ -110,26 +110,6 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-function RowMenu() {
-  return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>Rename</MenuItem>
-        <MenuItem>Move</MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
-  );
-}
-
 export default function OrderTable() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -298,6 +278,10 @@ export default function OrderTable() {
         </Select>
       </FormControl>
       <FormControl size="sm">
+        <FormLabel>Date</FormLabel>
+        <Input type="date" onChange={(e) => fetchDate(e.target.value)} />
+      </FormControl>
+      <FormControl size="sm">
         <FormLabel>ETA(from)</FormLabel>
         <Input type="time" onChange={(e) => fetchEta(e.target.value)} />
       </FormControl>
@@ -305,10 +289,18 @@ export default function OrderTable() {
         <FormLabel>ETA(to)</FormLabel>
         <Input type="time" onChange={(e) => fetchEtaTo(e.target.value)} />
       </FormControl>
-      <FormControl size="sm">
-        <FormLabel>Date</FormLabel>
-        <Input type="date" onChange={(e) => fetchDate(e.target.value)} />
-      </FormControl>
+      
+      <FormControl sx={{ flex: 1 }} size="sm">
+          <FormLabel>Search for receiving</FormLabel>
+          <Input
+            size="sm"
+            placeholder="Search by Part Number"
+            startDecorator={<SearchIcon />}
+            onChange={(e) => {
+              fetchData(e.target.value);
+            }}
+          />
+        </FormControl>
     </React.Fragment>
   );
   return (
@@ -343,17 +335,7 @@ export default function OrderTable() {
           },
         }}
       >
-        <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for receiving</FormLabel>
-          <Input
-            size="sm"
-            placeholder="Search by Part Number"
-            startDecorator={<SearchIcon />}
-            onChange={(e) => {
-              fetchData(e.target.value);
-            }}
-          />
-        </FormControl>
+        
 
         {renderFilters()}
       </Box>

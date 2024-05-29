@@ -89,11 +89,11 @@ export default function JoyOrderDashboardTemplate() {
             <Box>
               
             </Box>
-            <Barcode value="start" height={40}/>
-            <Barcode value="complete" height={40}/>
+            {/* <Barcode value="start" height={40}/>
+            <Barcode value="complete" height={40}/> */}
           </Box>
           <ReceiveInfo />
-          <OrderList />
+
         </Box>
       </Box>
     </CssVarsProvider>

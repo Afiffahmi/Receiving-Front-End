@@ -123,6 +123,8 @@ export default function OrderTable() {
   const location = useLocation();
   const item = location.state;
 
+ 
+
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -134,7 +136,6 @@ export default function OrderTable() {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
   }, []);
 

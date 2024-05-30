@@ -209,10 +209,8 @@ export default function Sidebar() {
               )}
             >
               <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton>Pending Invoice Scanning</ListItemButton>
-                </ListItem>
-                <ListItem component={Link} to='/transaction'>
+
+                <ListItem sx={{mt:0.5}} component={Link} to='/transaction'>
                   <ListItemButton>Pending Invoice Scanning</ListItemButton>
                 </ListItem>
                 <ListItem component={Link} to='/complete'>

@@ -329,6 +329,17 @@ export default function OrderTable() {
           replace: true,
         });
       }, 2300);
+    }else if(input.length >= 9 && input !== itemNo){
+      setInput("");
+      toast.error("Invalid Part No", {
+        position: "bottom-center",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
     }
   };
   const handleReceive = () => {

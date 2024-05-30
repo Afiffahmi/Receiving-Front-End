@@ -8,8 +8,9 @@ import Link from "@mui/joy/Link";
 import Typography from "@mui/joy/Typography";
 import { useLocation, Link as RouteLink } from "react-router-dom";
 import { Pie, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-
+import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
+import ActivityLegend from "../ActivityLegend";
+import { Link as RouterLink } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -31,6 +32,8 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import ListSubheader from "@mui/joy/ListSubheader";
+import ListItemButton from "@mui/joy/ListItemButton";
+import "../ActivityGrid.css";
 
 const Item = styled(Sheet)(({ theme }) => ({
   backgroundColor:
@@ -92,20 +95,23 @@ export interface EtaWithinRange {
 export default function JoyOrderDashboardTemplate() {
   const [rows, setRows] = React.useState<Daum[]>([]);
   const [incoming, setIncoming] = React.useState<EtaWithinRange[]>([]);
-  const [supplier, setSupplier] = React.useState<Supplier>();
+  const [past, setPast] = React.useState<EtaWithinRange[]>([]);
   const [twoHoursBefore, setTwoHoursBefore] = React.useState<string>("");
   const [twoHoursAfter, setTwoHoursAfter] = React.useState<string>("");
-  ChartJS.register(ArcElement, Tooltip, Legend);
+  const [hourlyData, setHourlyData] = React.useState([]);
+  const [today, setToday] = React.useState("");
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get("/api/countItem.php");
         setRows(response.data.data);
-        setSupplier(response.data.supplier);
         setIncoming(response.data.etaWithinRange);
         setTwoHoursBefore(response.data.twoHoursBefore);
         setTwoHoursAfter(response.data.twoHoursAfter);
+        setPast(response.data.pastEta);
+        setHourlyData(response.data.hourlyData);
+        setToday(response.data.today);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -114,25 +120,9 @@ export default function JoyOrderDashboardTemplate() {
     fetchData();
   });
 
-  const chartData = {
-    labels: [""],
-    datasets: [
-      {
-        data: [],
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-        borderColor: "#fff", // Optional: Color for the borders of slices
-      },
-    ],
-  };
-
-  const options = {
-    title: {
-      display: true,
-      text: "Pie Chart Title",
-    },
-    maintainAspectRatio: false, // Adjust the chart's width based on container size
-    responsive: true, // Enable responsiveness for different screen sizes
-  };
+  //@ts-ignore
+  const maxCount = Math.max(...hourlyData.map((d) => d.count), 0);
+  const currentHour = new Date().getHours();
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -213,12 +203,13 @@ export default function JoyOrderDashboardTemplate() {
                     <Divider />
                   </CardOverflow>
                   <CardContent>
-                    <Typography level="title-lg">Receiving Pending</Typography>
+                    <Typography level="title-lg">Previous Pending History</Typography>
                   </CardContent>
                   <Sheet
                     sx={{
                       maxHeight: 100,
                       overflow: "auto",
+                      m: 1,
                     }}
                   >
                     {rows.map((row, index) => (
@@ -226,55 +217,24 @@ export default function JoyOrderDashboardTemplate() {
                         key={index}
                         sx={{
                           display: "flex",
-                          gap: 2,
+                          gap: 5,
                           alignItems: "center",
                           justifyContent: "space-between",
+                          mb: 1,
                         }}
                       >
-                        <Badge
-                          anchorOrigin={{ vertical: "top", horizontal: "left" }}
-                          badgeInset="2%"
+                        <Chip
+                          variant="outlined"
                           color="danger"
+                          size="sm"
                           sx={{
-                            [`& .${badgeClasses.badge}`]: {
-                              "&::after": {
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                                borderRadius: "50%",
-                                animation: "ripple 1.2s infinite ease-in-out",
-                                border: "2px solid",
-                                borderColor: "success.500",
-                                content: '""',
-                              },
-                            },
-                            "@keyframes ripple": {
-                              "0%": {
-                                transform: "scale(1)",
-                                opacity: 1,
-                              },
-                              "100%": {
-                                transform: "scale(2)",
-                                opacity: 0,
-                              },
-                            },
+                            borderRadius: "sm",
+                            py: 0.25,
+                            px: 0.5,
                           }}
                         >
-                          <Chip
-                            variant="outlined"
-                            color="danger"
-                            size="sm"
-                            sx={{
-                              borderRadius: "sm",
-                              py: 0.25,
-                              px: 0.5,
-                            }}
-                          >
-                            {row.Date}
-                          </Chip>
-                        </Badge>
+                          {row.Date}
+                        </Chip>
 
                         <Link
                           component={RouteLink}
@@ -300,16 +260,13 @@ export default function JoyOrderDashboardTemplate() {
                 </Card>
               </Item>
             </Grid>
-
             <Grid xs={4}>
               <Item>
                 <Card
                   variant="outlined"
                   sx={{
-                    width: 320,
                     maxHeight: 350,
                     height: 350,
-                    marginRight: 5,
                   }}
                 >
                   <Sheet
@@ -349,6 +306,11 @@ export default function JoyOrderDashboardTemplate() {
                           )}
                           {incoming.map((row) => (
                             <ListItem>
+                              <ListItemButton component={RouterLink}
+                              to="/receiveinfo"
+                              state={{
+                                RefNo: [row.RefNo],
+                              }}>
                               <Card
                                 sx={{ width: 500 }}
                                 color="primary"
@@ -370,7 +332,7 @@ export default function JoyOrderDashboardTemplate() {
                                     </Typography>
                                   </Stack>
                                 </CardContent>
-                              </Card>
+                              </Card></ListItemButton>
                             </ListItem>
                           ))}
                         </List>
@@ -382,14 +344,93 @@ export default function JoyOrderDashboardTemplate() {
             </Grid>
             <Grid xs={4}>
               <Item>
-                <Card></Card>
+                <Card
+                  variant="outlined"
+                  sx={{
+                    width: 320,
+                    maxHeight: 350,
+                    height: 350,
+                    marginRight: 1,
+                  }}
+                >
+                  <Sheet
+                    variant="plain"
+                    sx={{
+                      maxHeight: 300,
+                      overflow: "auto",
+                      borderRadius: "sm",
+                    }}
+                  >
+                    <List>
+                      <ListItem nested>
+                        <ListSubheader sticky sx={{ alignSelf: "center" }}>
+                          <Typography level="title-md">
+                            Pending Delivery
+                          </Typography>{" "}
+                        </ListSubheader>
+                        <List>
+                          {past.length === 0 && (
+                            <ListItem
+                              sx={{
+                                alignItems: "center",
+                                alignContent: "center",
+                                alignSelf: "center",
+                                marginTop: 10,
+                              }}
+                            >
+                              <Stack direction="column">
+                                <Typography level="body-sm">
+                                  No pending delivery
+                                </Typography>
+                              </Stack>
+                            </ListItem>
+                          )}
+                          {past.map((row) => (
+                            <ListItem>
+                              <ListItemButton component={RouterLink}
+                              to="/receiveinfo"
+                              state={{
+                                RefNo: [row.RefNo],
+                              }}>
+                              <Card
+                                sx={{ width: 500 }}
+                                color="danger"
+                                variant="soft"
+                              >
+                                <Typography level="title-sm">
+                                  {row.Supplier}
+                                </Typography>
+                                <CardContent>
+                                  <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                  >
+                                    <Typography level="body-sm">
+                                      {row.RefNo}
+                                    </Typography>
+                                    <Typography level="body-sm">
+                                      {row.ETA}
+                                    </Typography>
+                                  </Stack>
+                                </CardContent>
+                              </Card></ListItemButton>
+                            </ListItem>
+                          ))}
+                        </List>
+                      </ListItem>
+                    </List>
+                  </Sheet>
+                </Card>
               </Item>
             </Grid>
-            <Grid xs={4}>
+            <Grid xs={8} sx={{ mr: 1.0 }}>
               <Item>
-                <Card variant="outlined" sx={{ width: 320, maxHeight: 500 }}>
+                <Card variant="outlined" sx={{ width: 800, maxHeight: 150 }}>
                   <CardContent>
-                    <Typography level="title-lg">Scan Pending</Typography>
+                    <Typography level="title-lg">
+                      Hourly Delivery Tracker{" "}
+                    </Typography>
+                    <Typography level="body-sm">{today}</Typography>
                   </CardContent>
 
                   <CardOverflow>
@@ -403,68 +444,51 @@ export default function JoyOrderDashboardTemplate() {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Badge
-                      anchorOrigin={{ vertical: "top", horizontal: "left" }}
-                      badgeInset="2%"
-                      color="danger"
-                      sx={{
-                        [`& .${badgeClasses.badge}`]: {
-                          "&::after": {
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
-                            borderRadius: "50%",
-                            animation: "ripple 1.2s infinite ease-in-out",
-                            border: "2px solid",
-                            borderColor: "success.500",
-                            content: '""',
-                          },
-                        },
-                        "@keyframes ripple": {
-                          "0%": {
-                            transform: "scale(1)",
-                            opacity: 1,
-                          },
-                          "100%": {
-                            transform: "scale(2)",
-                            opacity: 0,
-                          },
-                        },
-                      }}
-                    >
-                      <Chip
-                        variant="outlined"
-                        color="danger"
-                        size="sm"
-                        sx={{
-                          borderRadius: "sm",
-                          py: 0.25,
-                          px: 0.5,
-                        }}
-                      >
-                        20-5-2024
-                      </Chip>
-                    </Badge>
+                    <div>
+                      <div className="grid">
+                      {Array.from({ length: 24 }).map((_, hour) => {
+                        const cellData = hourlyData.find(d => d.hour === hour) || { hour, count: 0 };
+                        const intensity = cellData.count / maxCount;
+                        let backgroundColor, textColor;
 
-                    <Link
-                      level="body-sm"
-                      underline="none"
-                      startDecorator={<DocumentScannerIcon />}
-                      endDecorator={<ArrowForwardIosIcon />}
-                      sx={{
-                        fontWeight: "md",
-                        color: "text.secondary",
-                        "&:hover": { color: "primary.plainColor" },
-                      }}
-                    >
-                      1 items
-                    </Link>
+                        if (hour < currentHour) {
+                            backgroundColor = `rgba(255, 0, 0, ${intensity})`; // Red color for past hours
+                            textColor = intensity > 0.5 ? 'white' : 'black';
+                        } else {
+                            backgroundColor = `rgba(0, 0, 255, ${intensity})`; // Blue color for current and future hours
+                            textColor = intensity > 0.5 ? 'white' : 'black';
+                        }
+
+                        return (<Sheet>
+
+                       
+                            <div
+                                key={hour}
+                                className="cell"
+                                style={{ backgroundColor, color: textColor }}
+                            >
+                                <div>{cellData.count}</div>
+                                
+                            </div><div className="hour">{hour}:00</div>
+                            </Sheet>
+                        );
+                    })}
+                      </div>
+                    </div>
                   </Box>
                 </Card>
               </Item>
             </Grid>
+            <Grid xs={3}>
+              <Item>
+                <Card sx={{ height: 150,width:310 }}>
+                  <CardContent>
+                    <Typography level="title-lg">Legend</Typography>
+                    <ActivityLegend maxCount={maxCount} />
+                  </CardContent>
+                </Card>
+              </Item>
+            </Grid>{" "}
           </Grid>
         </Box>
       </Box>

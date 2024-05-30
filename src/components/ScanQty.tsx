@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {useNavigate,Link, Navigate,useLocation} from 'react-router-dom';
 import Barcode from 'react-barcode';
-import { Box, Grid, Sheet, Typography } from '@mui/joy';
+import { Box, Button, Grid, Sheet, Typography,Stack } from '@mui/joy';
 import Input from '@mui/joy/Input';
 // For web compatibility, consider using a library like react-zxing or user-media API
 
@@ -14,26 +14,43 @@ const Scanner = () => {
   const location = useLocation();
 
   const item = location.state;
-  console.log(item);
+
 
   const handleChange = (input:any) => {
-    let qty = Number(input.target.value);
-    if(item.itemNo === item.scan && (qty + item.prev_qty) <= item.total){
+    let qty = input.target.value;
+    setScannedData(qty);
+    let inputNumber = parseInt(qty.replace('complete', ''), 10);
+    if (!isNaN(inputNumber) && qty.endsWith('complete')) {
+      qty = Number(inputNumber); // Update qty with the numerical part
+    
+    if(item.itemNo === item.scan && (qty + Number(item.prev_qty)) <= Number(item.total)){
       qty += Number(item.prev_qty)
     }else{
-      qty = item.prev_qty
+      qty = Number(item.prev_qty)
     }
     window.setTimeout(() => {
     navigate('/receiveinfo',{state: {...item,qty:qty},replace:true})
-  },2500)
+  },1000)
+    }
+ 
   }
 
-    
+  const handleNext = () => {
+    let scan = Number(scannedData);
+    console.log(item.itemNo === item.scan)
+    if(item.itemNo === item.scan && (scan + Number(item.prev_qty)) <= Number(item.total)){
+      scan += Number(item.prev_qty)
+    }else{
+      scan = Number(item.prev_qty)
+    }
+    window.setTimeout(() => {
+    navigate('/receiveinfo',{state: {...item,qty:scan},replace:true})
+  },1000)
+    }
   
-    const handleChanges = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setText(e.target.value);
-    };
-  
+
+
+
 
   return (
     <Sheet
@@ -48,7 +65,7 @@ const Scanner = () => {
         }}
       >
       <Box sx={{alignSelf:'center',alignItems:'center',justifyContent:'center',width:550}}>
-      {text ? <Barcode value={text}/> : <Barcode value={item.total} />}
+      
       
       <Sheet
             sx={{
@@ -91,20 +108,22 @@ const Scanner = () => {
           </Sheet>
       <Typography level="h3">Scan Quantity</Typography>
       <Typography level="body-md">Scan the item quantity</Typography>
-      <Input 
-        type="text" 
-        value={text} 
-        onChange={handleChanges} 
-        placeholder="Enter text to generate quantity barcode..." 
-        sx={{marginBottom: 2}}
-      />
-      
+      <Stack direction="row" spacing={2} sx={{}}>
       <Input
         type="text"
         onChange={(e)=>{handleChange(e)}}
         autoFocus={!scannedData}
         placeholder='Scan quantity here...'
-      /></Box>
+        sx={{width:500}}
+      />
+      <Button onClick={()=>handleNext()}>Confirm</Button>
+      </Stack>
+      
+      
+      {text ? <Barcode value={text}/> : <Barcode value='complete' width={2} height={55}/>}
+      
+      </Box>
+      
     </Sheet>
   );
 };

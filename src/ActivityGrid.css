@@ -1,0 +1,22 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    gap: 2px;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 10px;
+}
+
+.hour {
+    font-size: 10px;  /* Smaller font for the hour */
+    margin-top: 5px;  /* Space between count and hour */
+}

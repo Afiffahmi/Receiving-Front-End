@@ -69,6 +69,8 @@ export interface Dataset {
 }
 
 export interface EtaWithinRange {
+  hour:'number';
+  count: number;
   receiveID: number;
   RefNo: string;
   PartNo: string;
@@ -325,10 +327,10 @@ export default function JoyOrderDashboardTemplate() {
                                     justifyContent="space-between"
                                   >
                                     <Typography level="body-sm">
-                                      {row.RefNo}
+                                      {row.count} items
                                     </Typography>
                                     <Typography level="body-sm">
-                                      {row.ETA}
+                                      {row.hour}:00
                                     </Typography>
                                   </Stack>
                                 </CardContent>
@@ -388,9 +390,12 @@ export default function JoyOrderDashboardTemplate() {
                           {past.map((row) => (
                             <ListItem>
                               <ListItemButton component={RouterLink}
-                              to="/receiveinfo"
+                              to="/receiving"
                               state={{
-                                RefNo: [row.RefNo],
+                                supplier: row.Supplier,
+                                date: today,
+                                eta_from: `${row.hour}:00`,
+                                eta_to: `${row.hour}:00`,
                               }}>
                               <Card
                                 sx={{ width: 500 }}
@@ -406,10 +411,10 @@ export default function JoyOrderDashboardTemplate() {
                                     justifyContent="space-between"
                                   >
                                     <Typography level="body-sm">
-                                      {row.RefNo}
+                                      {row.count} items
                                     </Typography>
                                     <Typography level="body-sm">
-                                      {row.ETA}
+                                      {row.hour}:00
                                     </Typography>
                                   </Stack>
                                 </CardContent>

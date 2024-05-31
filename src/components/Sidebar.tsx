@@ -20,6 +20,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import BrightnessAutoRoundedIcon from '@mui/icons-material/BrightnessAutoRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {useNavigate,Link} from 'react-router-dom';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
@@ -171,14 +172,17 @@ export default function Sidebar() {
               )}
             >
               <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
+                <ListItem sx={{ mt: 0.5 }} component={Link} to='/alldelivery'>
                   <ListItemButton>All Delivery</ListItemButton>
                 </ListItem>
+                <ListItem component={Link} to='/pending'>
+                  <ListItemButton>Pending delivery</ListItemButton>
+                </ListItem>
                 <ListItem component={Link} to='/transaction'>
-                  <ListItemButton>Transaction History</ListItemButton>
+                  <ListItemButton>Incomplete delivery</ListItemButton>
                 </ListItem>
                 <ListItem component={Link} to='/complete'>
-                  <ListItemButton>Completion Info</ListItemButton>
+                  <ListItemButton>Transaction History</ListItemButton>
                 </ListItem>
               </List>
             </Toggler>
@@ -218,6 +222,16 @@ export default function Sidebar() {
                 </ListItem>
               </List>
             </Toggler>
+          </ListItem>
+
+          <Chip sx={{marginTop:2}} color='danger' variant='soft'>Maintenance</Chip>
+          <ListItem component={Link} to='/scan' >
+            <ListItemButton>
+              <SettingsIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Manage Supplier</Typography>
+              </ListItemContent>
+            </ListItemButton>
           </ListItem>
 
         </List>

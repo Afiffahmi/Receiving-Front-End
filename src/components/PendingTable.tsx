@@ -128,7 +128,7 @@ export default function OrderTable() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/receiveData.php", {
+        const response = await axios.get("/api/pendingData.php", {
           params: item,
         });
         setRows(response.data);
@@ -141,7 +141,7 @@ export default function OrderTable() {
 
   const fetchData = async (input: string) => {
     try {
-      const response = await axios.get("/api/receiveData.php", {
+      const response = await axios.get("/api/pendingData.php", {
         params: {
           ...item,
           part_no: input,
@@ -164,7 +164,7 @@ export default function OrderTable() {
   ) => {
     setSupplier(newValue!);
     try {
-      const response = await axios.get("/api/receiveData.php", {
+      const response = await axios.get("/api/pendingData.php", {
         params: {
           ...item,
           supplier: newValue,
@@ -185,7 +185,7 @@ export default function OrderTable() {
     setDate(input);
 
     try {
-      const response = await axios.get("/api/receiveData.php", {
+      const response = await axios.get("/api/pendingData.php", {
         params: {
           ...item,
           date: input,
@@ -212,7 +212,7 @@ export default function OrderTable() {
       eta_to: input,
     });
     try {
-      const response = await axios.get("/api/receiveData.php", {
+      const response = await axios.get("/api/pendingData.php", {
         params: {
           ...item,
           date: Date,
@@ -232,7 +232,7 @@ export default function OrderTable() {
   const fetchEta = async (input: string) => {
     setETA(input);
     try {
-      const response = await axios.get("/api/receiveData.php", {
+      const response = await axios.get("/api/pendingData.php", {
         params: {
           ...item,
           date: Date,

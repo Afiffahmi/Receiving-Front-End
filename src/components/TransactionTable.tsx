@@ -103,6 +103,11 @@ export default function OrderTable() {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
   const [rows, setRows] = React.useState<Daum[]>([]);
+  const [etaTo, setEtaTo] = React.useState("");
+  const [partNo, setPartNo] = React.useState("");
+  const [supplier, setSupplier] = React.useState("");
+  const [ETA, setETA] = React.useState("");
+  const [Date, setDate] = React.useState("");
   const location = useLocation();
   const item = location.state;
 
@@ -120,11 +125,170 @@ React.useEffect(() => {
   fetchData();
 }, []);
 
+const fetchData = async (input: string) => {
+  try {
+    const response = await axios.get("/api/completeData.php", {
+      params: {
+        ...item,
+        part_no: input,
+        supplier: supplier,
+        date: Date,
+        eta_from: ETA,
+      },
+    });
+
+    setRows(response.data.data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    // Handle errors gracefully (e.g., display error message to user)
+  }
+};
+
+const fetchSupplier = async (
+  event: React.SyntheticEvent | null,
+  newValue: string | null
+) => {
+  setSupplier(newValue!);
+  try {
+    const response = await axios.get("/api/completeData.php", {
+      params: {
+        ...item,
+        supplier: newValue,
+        date: Date,
+        eta_from: ETA,
+        eta_to: etaTo,
+      },
+    });
+
+    setRows(response.data.data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    // Handle errors gracefully (e.g., display error message to user)
+  }
+};
+
+const fetchDate = async (input: string) => {
+  setDate(input);
+
+  try {
+    const response = await axios.get("/api/completeData.php", {
+      params: {
+        ...item,
+        date: input,
+        supplier: supplier,
+        eta_from: ETA,
+        eta_to: etaTo,
+      },
+    });
+
+    setRows(response.data.data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    // Handle errors gracefully (e.g., display error message to user)
+  }
+};
+
+const fetchEtaTo = async (input: string) => {
+  setEtaTo(input);
+  console.log({
+    ...item,
+    date: input,
+    supplier: supplier,
+    eta_from: ETA,
+    eta_to: input,
+  });
+  try {
+    const response = await axios.get("/api/completeData.php", {
+      params: {
+        ...item,
+        date: Date,
+        supplier: supplier,
+        eta_from: ETA,
+        eta_to: input,
+      },
+    });
+
+    setRows(response.data.data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    // Handle errors gracefully (e.g., display error message to user)
+  }
+};
+
+const fetchEta = async (input: string) => {
+  setETA(input);
+  try {
+    const response = await axios.get("/api/completeData.php", {
+      params: {
+        ...item,
+        date: Date,
+        supplier: supplier,
+        eta_from: input,
+        eta_to: etaTo,
+      },
+    });
+
+    setRows(response.data.data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    // Handle errors gracefully (e.g., display error message to user)
+  }
+};
 
   const renderFilters = () => (
     <React.Fragment>
-     
-    </React.Fragment>
+      <FormControl size="sm">
+      <FormLabel>Date</FormLabel>
+      <Input type="date" onChange={(e) => fetchDate(e.target.value)} />
+    </FormControl>
+    <FormControl size="sm">
+      <FormLabel>Supplier</FormLabel>
+      <Select
+        onChange={fetchSupplier}
+        size="sm"
+        placeholder="Filter by supplier"
+        slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
+      >
+        <Option value="">All</Option>
+        <Option value="Aureumaex">
+          Aureumaex Precision Plastics (M) SDN BHD
+        </Option>
+        <Option value="Bangi">Bangi Plastics SDN BHD</Option>
+        <Option value="Dai Suwon">Dai Suwon Packaging SDN BHD</Option>
+        <Option value="Daidong">Daidong Engineering Malaysia SDN BHD</Option>
+        <Option value="Dynapac">Dynapac GF (Malaysia) SDN BHD</Option>
+        <Option value="Formosa">Formosa Prosonic Industries Berhad</Option>
+        <Option value="GS">GS Papaerboard & Packaging SDN BHD</Option>
+        <Option value="Jebsen">Jebsen & Jessen Packaging SDN BHD</Option>
+        <Option value="Kawaguchi">Kawaguchi Manufacturing SDN BHD</Option>
+        <Option value="Kein">Kein Hing Industry SDN BHD</Option>
+        <Option value="Ornapaper">Ornapaper Industry (M) SDN BHD</Option>
+        <Option value="Ryoka">Ryoka (Malaysia) SDN BHD</Option>
+        <Option value="Tokopak">Tokopak SDN BHD</Option>
+        <Option value="YH">YH Precision (M) SDN BHD</Option>
+      </Select>
+    </FormControl>
+    {/* <FormControl size="sm">
+      <FormLabel>ETA(from)</FormLabel>
+      <Input type="time" onChange={(e) => fetchEta(e.target.value)} />
+    </FormControl>
+    <FormControl size="sm">
+      <FormLabel>ETA(to)</FormLabel>
+      <Input type="time" onChange={(e) => fetchEtaTo(e.target.value)} />
+    </FormControl> */}
+    
+    <FormControl sx={{ flex: 1 }} size="sm">
+        <FormLabel>Search for completion</FormLabel>
+        <Input
+          size="sm"
+          placeholder="Search by Part Number"
+          startDecorator={<SearchIcon />}
+          onChange={(e) => {
+            fetchData(e.target.value);
+          }}
+        />
+      </FormControl>
+  </React.Fragment>
   );
   return (
     <React.Fragment>
@@ -235,7 +399,7 @@ React.useEffect(() => {
                   <Chip color='danger' variant='outlined' size='sm'>Remain Qty : {row.Qty}</Chip>
                 </td>
                 <td style={{ textAlign: 'center', width: 120 }}>
-                 <Chip color='warning' >Pending</Chip>
+                 <Chip color='warning' >Incomplete</Chip>
                 </td>
               </tr>
              

@@ -115,7 +115,7 @@ export default function OrderTable() {
 React.useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await axios.get('/api/completeData.php');
+      const response = await axios.get('/api/allData.php');
       setRows(response.data.data);
       console.log(response.data);
     } catch (error) {
@@ -128,7 +128,7 @@ React.useEffect(() => {
 
 const fetchData = async (input: string) => {
   try {
-    const response = await axios.get("/api/completeData.php", {
+    const response = await axios.get("/api/allData.php", {
       params: {
         ...item,
         part_no: input,
@@ -151,7 +151,7 @@ const fetchSupplier = async (
 ) => {
   setSupplier(newValue!);
   try {
-    const response = await axios.get("/api/completeData.php", {
+    const response = await axios.get("/api/allData.php", {
       params: {
         ...item,
         supplier: newValue,
@@ -172,7 +172,7 @@ const fetchDate = async (input: string) => {
   setDate(input);
 
   try {
-    const response = await axios.get("/api/completeData.php", {
+    const response = await axios.get("/api/allData.php", {
       params: {
         ...item,
         date: input,
@@ -199,7 +199,7 @@ const fetchEtaTo = async (input: string) => {
     eta_to: input,
   });
   try {
-    const response = await axios.get("/api/completeData.php", {
+    const response = await axios.get("/api/allData.php", {
       params: {
         ...item,
         date: Date,
@@ -219,7 +219,7 @@ const fetchEtaTo = async (input: string) => {
 const fetchEta = async (input: string) => {
   setETA(input);
   try {
-    const response = await axios.get("/api/completeData.php", {
+    const response = await axios.get("/api/allData.php", {
       params: {
         ...item,
         date: Date,
@@ -280,7 +280,7 @@ const fetchEta = async (input: string) => {
     </FormControl> */}
     
     <FormControl sx={{ flex: 1 }} size="sm">
-        <FormLabel>Search for completion</FormLabel>
+        <FormLabel>Search for delivery</FormLabel>
         <Input
           size="sm"
           placeholder="Search by Part Number"
@@ -397,7 +397,7 @@ const fetchEta = async (input: string) => {
                   <Typography level="body-xs">{row.JOCPlanLot}</Typography>
                 </td>
                 <td style={{ textAlign: 'center', width: 120 }}>
-                 <Chip color='success'>Complete</Chip>
+                 {row.Qty <= 0 ? <Chip color='success'>Complete</Chip> : <Chip color='warning'>Incomplete</Chip>}
                 </td>
               </tr>
              

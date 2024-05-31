@@ -11,9 +11,11 @@ import Selection from './routes/Selection.tsx';
 import FileUpload from './components/FileUpload.tsx';
 import CompleteReceive from './routes/CompleteReceive.tsx';
 import Transaction from './routes/Transaction.tsx';
-import Dashboard from './routes/Dashboard.tsx'
-import ScanItem from './components/ScanItem.tsx'
-import ScanQty from './components/ScanQty.tsx'
+import Dashboard from './routes/Dashboard.tsx';
+import ScanItem from './components/ScanItem.tsx';
+import ScanQty from './components/ScanQty.tsx';
+import All from './routes/All.tsx';
+import Pending from './routes/Pending.tsx';
 
 const rootContainer = document.getElementById("root");
 
@@ -57,6 +59,14 @@ const router = createBrowserRouter([
   {
     path:'/scanqty',
     element: <ScanQty/>
+  },
+  {
+    path:'/alldelivery',
+    element: <All />
+  },
+  {
+    path:'/pending',
+    element: <Pending />
   }
 ]);
 

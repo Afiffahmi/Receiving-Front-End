@@ -57,6 +57,11 @@ export interface ConsumeDaum {
   rcv_time: string
 }
 
+interface Supplier {
+  id: number;
+  SupplierName: string;
+  SupplierFirstName: string;
+}
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -110,6 +115,7 @@ export default function OrderTable() {
   const [ETA, setETA] = React.useState("");
   const [Date, setDate] = React.useState("");
   const location = useLocation();
+  const [suppliers,setSuppliers] = React.useState<Supplier[]>([]);
   const item = location.state;
 
 React.useEffect(() => {
@@ -122,9 +128,18 @@ React.useEffect(() => {
       console.error('Error fetching data:', error);
     }
   };
-
+  fetchSuppliers();
   fetchData();
 }, []);
+
+const fetchSuppliers = async () => {
+  try {
+      const response = await axios.get('/api/supplierData.php');
+      setSuppliers(response.data.data);
+  } catch (error) {
+      console.error('Error fetching suppliers:', error);
+  }
+};
 
 const fetchData = async (input: string) => {
   try {
@@ -251,23 +266,10 @@ const fetchEta = async (input: string) => {
         placeholder="Filter by supplier"
         slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
       >
-        <Option value="">All</Option>
-        <Option value="Aureumaex">
-          Aureumaex Precision Plastics (M) SDN BHD
-        </Option>
-        <Option value="Bangi">Bangi Plastics SDN BHD</Option>
-        <Option value="Dai Suwon">Dai Suwon Packaging SDN BHD</Option>
-        <Option value="Daidong">Daidong Engineering Malaysia SDN BHD</Option>
-        <Option value="Dynapac">Dynapac GF (Malaysia) SDN BHD</Option>
-        <Option value="Formosa">Formosa Prosonic Industries Berhad</Option>
-        <Option value="GS">GS Papaerboard & Packaging SDN BHD</Option>
-        <Option value="Jebsen">Jebsen & Jessen Packaging SDN BHD</Option>
-        <Option value="Kawaguchi">Kawaguchi Manufacturing SDN BHD</Option>
-        <Option value="Kein">Kein Hing Industry SDN BHD</Option>
-        <Option value="Ornapaper">Ornapaper Industry (M) SDN BHD</Option>
-        <Option value="Ryoka">Ryoka (Malaysia) SDN BHD</Option>
-        <Option value="Tokopak">Tokopak SDN BHD</Option>
-        <Option value="YH">YH Precision (M) SDN BHD</Option>
+         <Option value="">All</Option>
+          {suppliers.map((supplier) => (
+            <Option key={supplier.id} value={supplier.SupplierFirstName}>{supplier.SupplierName}</Option>
+           ))}
       </Select>
     </FormControl>
     {/* <FormControl size="sm">

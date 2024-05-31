@@ -8,13 +8,34 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option'
 import Typography from '@mui/joy/Typography';
 import { Input, Stack,Box, Button } from '@mui/joy';
+import axios from 'axios';
+
+interface Supplier {
+  id: number;
+  SupplierName: string;
+  SupplierFirstName: string;
+}
 
 export default function NestedCard() {
+    const [suppliers,setSuppliers] = React.useState<Supplier[]>([]);
     const [supplier,setSupplier] = React.useState<string>('');
     const [date,setDate] = React.useState<string>('');
     const [timeFrom,setTimeFrom] = React.useState<string>('');
     const [timeTo,setTimeTo] = React.useState<string>('');
     const navigate = useNavigate();
+
+    React.useEffect(() => {
+      fetchSuppliers();
+    },[]);
+
+    const fetchSuppliers = async () => {
+      try {
+          const response = await axios.get('/api/supplierData.php');
+          setSuppliers(response.data.data);
+      } catch (error) {
+          console.error('Error fetching suppliers:', error);
+      }
+  };
 
     const handleChange = (
         event: React.SyntheticEvent | null,
@@ -45,20 +66,12 @@ export default function NestedCard() {
             <Box>
             <Typography level="title-md">Supplier Name</Typography>
             <Select onChange={handleChange} sx={{minWidth:'400px'}}>
-            <Option value="Aureumaex">Aureumaex Precision Plastics (M) SDN BHD</Option>
-            <Option value="Bangi">Bangi Plastics SDN BHD</Option>
-            <Option value="Dai Suwon">Dai Suwon Packaging SDN BHD</Option>
-            <Option value="Daidong">Daidong Engineering Malaysia SDN BHD</Option>
-            <Option value="Dynapac">Dynapac GF (Malaysia) SDN BHD</Option>
-            <Option value="Formosa">Formosa Prosonic Industries Berhad</Option>
-            <Option value="GS">GS Papaerboard & Packaging SDN BHD</Option>
-            <Option value="Jebsen">Jebsen & Jessen Packaging SDN BHD</Option>
-            <Option value="Kawaguchi">Kawaguchi Manufacturing SDN BHD</Option>
-            <Option value="Kein">Kein Hing Industry SDN BHD</Option>
-            <Option value="Ornapaper">Ornapaper Industry (M) SDN BHD</Option>
-            <Option value="Ryoka">Ryoka (Malaysia) SDN BHD</Option>
-            <Option value="Tokopak">Tokopak SDN BHD</Option>
-            <Option value="YH">YH Precision (M) SDN BHD</Option>
+            <Option value="">All</Option>
+           {suppliers.map((supplier) => (
+            <Option key={supplier.id} value={supplier.SupplierFirstName}>{supplier.SupplierName}</Option>
+           ))}
+           
+            
             </Select>
             </Box>
           <Box>

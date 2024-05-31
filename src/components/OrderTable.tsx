@@ -1,18 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import * as React from "react";
-import { ColorPaletteProp } from "@mui/joy/styles";
-import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Chip from "@mui/joy/Chip";
-import Divider from "@mui/joy/Divider";
+
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import Link from "@mui/joy/Link";
 import Input from "@mui/joy/Input";
-import Modal from "@mui/joy/Modal";
-import ModalDialog from "@mui/joy/ModalDialog";
-import ModalClose from "@mui/joy/ModalClose";
+
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Table from "@mui/joy/Table";
@@ -20,21 +15,16 @@ import Sheet from "@mui/joy/Sheet";
 import Checkbox from "@mui/joy/Checkbox";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import Menu from "@mui/joy/Menu";
-import MenuButton from "@mui/joy/MenuButton";
-import MenuItem from "@mui/joy/MenuItem";
-import Dropdown from "@mui/joy/Dropdown";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 
 import { Link as RouterLink } from "react-router-dom";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
 export interface Receive {
   id: string;
@@ -65,6 +55,12 @@ export interface Receive {
     email: string;
     initial: string;
   };
+}
+
+interface Supplier {
+  id: number;
+  SupplierName: string;
+  SupplierFirstName: string;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -114,6 +110,7 @@ export default function OrderTable() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+  const [suppliers,setSuppliers] = React.useState<Supplier[]>([]);
   const [rows, setRows] = React.useState<Receive[]>([]);
   const [etaTo, setEtaTo] = React.useState("");
   const [partNo, setPartNo] = React.useState("");
@@ -136,8 +133,18 @@ export default function OrderTable() {
         console.error("Error fetching data:", error);
       }
     };
+    fetchSuppliers();
     fetchData();
   }, []);
+
+  const fetchSuppliers = async () => {
+    try {
+        const response = await axios.get('/api/supplierData.php');
+        setSuppliers(response.data.data);
+    } catch (error) {
+        console.error('Error fetching suppliers:', error);
+    }
+};
 
   const fetchData = async (input: string) => {
     try {
@@ -251,6 +258,11 @@ export default function OrderTable() {
 
   const renderFilters = () => (
     <React.Fragment>
+      
+      <FormControl size="sm">
+        <FormLabel>Date</FormLabel>
+        <Input type="date" onChange={(e) => fetchDate(e.target.value)} />
+      </FormControl>
       <FormControl size="sm">
         <FormLabel>Supplier</FormLabel>
         <Select
@@ -260,27 +272,10 @@ export default function OrderTable() {
           slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
         >
           <Option value="">All</Option>
-          <Option value="Aureumaex">
-            Aureumaex Precision Plastics (M) SDN BHD
-          </Option>
-          <Option value="Bangi">Bangi Plastics SDN BHD</Option>
-          <Option value="Dai Suwon">Dai Suwon Packaging SDN BHD</Option>
-          <Option value="Daidong">Daidong Engineering Malaysia SDN BHD</Option>
-          <Option value="Dynapac">Dynapac GF (Malaysia) SDN BHD</Option>
-          <Option value="Formosa">Formosa Prosonic Industries Berhad</Option>
-          <Option value="GS">GS Papaerboard & Packaging SDN BHD</Option>
-          <Option value="Jebsen">Jebsen & Jessen Packaging SDN BHD</Option>
-          <Option value="Kawaguchi">Kawaguchi Manufacturing SDN BHD</Option>
-          <Option value="Kein">Kein Hing Industry SDN BHD</Option>
-          <Option value="Ornapaper">Ornapaper Industry (M) SDN BHD</Option>
-          <Option value="Ryoka">Ryoka (Malaysia) SDN BHD</Option>
-          <Option value="Tokopak">Tokopak SDN BHD</Option>
-          <Option value="YH">YH Precision (M) SDN BHD</Option>
+          {suppliers.map((supplier) => (
+            <Option key={supplier.id} value={supplier.SupplierFirstName}>{supplier.SupplierName}</Option>
+           ))}
         </Select>
-      </FormControl>
-      <FormControl size="sm">
-        <FormLabel>Date</FormLabel>
-        <Input type="date" onChange={(e) => fetchDate(e.target.value)} />
       </FormControl>
       <FormControl size="sm">
         <FormLabel>ETA(from)</FormLabel>

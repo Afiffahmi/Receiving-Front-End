@@ -225,7 +225,7 @@ export default function Sidebar() {
           </ListItem>
 
           <Chip sx={{marginTop:2}} color='danger' variant='soft'>Maintenance</Chip>
-          <ListItem component={Link} to='/scan' >
+          <ListItem component={Link} to='/supplier' >
             <ListItemButton>
               <SettingsIcon />
               <ListItemContent>

@@ -25,6 +25,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { Chip } from "@mui/joy";
 
 export interface Receive {
   id: string;
@@ -125,7 +126,7 @@ export default function OrderTable() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/receiveData.php", {
+        const response = await axios.get("/api/scanData.php", {
           params: item,
         });
         setRows(response.data);
@@ -149,7 +150,7 @@ export default function OrderTable() {
 
   const fetchData = async (input: string) => {
     try {
-      const response = await axios.get("/api/receiveData.php", {
+      const response = await axios.get("/api/scanData.php", {
         params: {
           ...item,
           part_no: input,
@@ -288,7 +289,7 @@ export default function OrderTable() {
       </FormControl>
       
       <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for receiving</FormLabel>
+          <FormLabel>Search for scanning</FormLabel>
           <Input
             size="sm"
             placeholder="Search by Part Number"
@@ -392,14 +393,14 @@ export default function OrderTable() {
               </th>
               <th style={{ width: 100, padding: "12px 6px" }}>Part No</th>
               <th style={{ width: 120, padding: "12px 6px" }}>Description</th>
-              <th style={{ width: 200, padding: "12px 6px" }}>Supplier</th>
-              <th style={{ width: 80, padding: "12px 6px" }}>PO No</th>
-              <th style={{ width: 60, padding: "12px 6px" }}>Qty</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>Supplier</th>
+              <th style={{ width: 70, padding: "12px 6px" }}>PO No</th>
+              <th style={{ width: 80, padding: "12px 6px" }}>Plan lot</th>
               <th style={{ width: 70, padding: "12px 6px" }}>WS CD</th>
               <th style={{ width: 65, padding: "12px 6px" }}>Loc</th>
               <th style={{ width: 80, padding: "12px 6px" }}>Date</th>
               <th style={{ width: 80, padding: "12px 6px" }}>ETA</th>
-              <th style={{ width: 70, padding: "12px 6px" }}>JOC/Plan lot</th>
+              <th style={{ width: 80, padding: "12px 6px" }}>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -436,9 +437,7 @@ export default function OrderTable() {
                 <td>
                   <Typography level="body-xs">{row.PONo}</Typography>
                 </td>
-                <td>
-                  <Typography level="body-xs">{row.Qty}</Typography>
-                </td>
+                
 
                 <td>
                   <Typography level="body-xs">{row.WsCd}</Typography>
@@ -455,6 +454,9 @@ export default function OrderTable() {
                 </td>
                 <td>
                   <Typography level="body-xs">{row.JOCPlanLot}</Typography>
+                </td>
+                <td>
+                  <Typography level="body-xs"><Chip size='sm' color='success' variant='solid'>Ready Scan</Chip></Typography>
                 </td>
               </tr>
             ))}
@@ -491,7 +493,7 @@ export default function OrderTable() {
           color="neutral"
           endDecorator={<KeyboardArrowRightIcon />}
           component={RouterLink}
-          to="/receiveinfo"
+          to="/scaninfo"
           state={{
             RefNo: selected,
           }}

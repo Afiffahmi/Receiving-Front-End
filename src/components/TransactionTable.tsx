@@ -43,6 +43,7 @@ export interface Daum {
   Supplier: string
   ETA: string
   Description: string
+  PONo: string
   WsCd: string
   Loc: string
   JOCPlanLot: string
@@ -383,7 +384,10 @@ const fetchEta = async (input: string) => {
                 <Typography level='title-sm'>Supplier</Typography>
                   <Typography level="body-xs">{row.Supplier}</Typography>
                 </td>
-
+                <td>
+                <Typography level='title-sm'>PO No</Typography>
+                  <Typography level="body-xs">{row.PONo}</Typography>
+                </td>
                 <td>
                 <Typography level='title-sm'>WsCd</Typography>
                   <Typography level="body-xs">{row.WsCd}</Typography>

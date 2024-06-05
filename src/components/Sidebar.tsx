@@ -152,7 +152,7 @@ export default function Sidebar() {
             <ListItemButton>
               <LocalShippingIcon />
               <ListItemContent>
-                <Typography level="title-sm">Receiving</Typography>
+                <Typography level="title-sm">Receive Order</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>
@@ -188,7 +188,7 @@ export default function Sidebar() {
             </Toggler>
           </ListItem>
           <Chip sx={{marginTop:2}} color='warning' variant='soft'>Invoice</Chip>
-          <ListItem component={Link} to='/scan' >
+          <ListItem component={Link} to='/scanner' >
             
             <ListItemButton>
               <DocumentScannerIcon />

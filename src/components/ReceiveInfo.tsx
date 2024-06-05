@@ -190,6 +190,8 @@ export default function OrderTable() {
   const item = location.state;
   const navigate = useNavigate();
 
+  console.log(item.RefNo);
+
   React.useEffect(() => {
     const fetchData = async () => {
       try {

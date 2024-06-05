@@ -12,7 +12,7 @@ import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
-import SelectOrder from '../components/SelectOrder';
+import SelectScan from '../components/SelectScan';
 
 export default function JoyOrderDashboardTemplate() {
 
@@ -67,7 +67,7 @@ export default function JoyOrderDashboardTemplate() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Receive Order
+                Scan Invoice
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -83,11 +83,11 @@ export default function JoyOrderDashboardTemplate() {
             }}
           >
             <Typography level="h2" component="h1">
-              Search Order
+            Scan Invoice
             </Typography>
 
           </Box>
-            <SelectOrder />
+            <SelectScan />
         </Box>
       </Box>
     </CssVarsProvider>

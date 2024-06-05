@@ -154,7 +154,15 @@ export default function NestedCard() {
             <tr key={row.id}>
               <td>{row.SupplierName}</td>
               <td>{row.SupplierFirstName}</td>
-              <td><Button size='sm' color='danger'>Remove</Button></td>
+              <td><Button size='sm' color='danger'
+              onClick={()=>{
+                const response = axios.delete('/api/supplier.php', {
+                  data: { id: row.id },
+                })
+
+                alert('Supplier Removed');
+              }}
+              >Remove</Button></td>
 
             </tr>
           ))}

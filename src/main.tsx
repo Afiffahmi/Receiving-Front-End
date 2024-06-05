@@ -17,6 +17,9 @@ import ScanQty from './components/ScanQty.tsx';
 import All from './routes/All.tsx';
 import Pending from './routes/Pending.tsx';
 import Supplier from './routes/Supplier.tsx';
+import Scanner from './routes/Scanner.tsx';
+import Scan from './routes/Scan.tsx';
+import StartScan from './routes/StartScan.tsx';
 
 const rootContainer = document.getElementById("root");
 
@@ -72,6 +75,18 @@ const router = createBrowserRouter([
   {
     path:'/supplier',
     element: <Supplier />
+  },
+  {
+    path:'/scanner',
+    element: <Scanner/>
+  },
+  {
+    path:'/scanning',
+    element: <Scan/>
+  },
+  {
+    path:'/scaninfo',
+    element: <StartScan/>
   }
 ]);
 

@@ -92,6 +92,7 @@ export interface EtaWithinRange {
   BatchID: string;
   Buyer: string;
   reg_date: string;
+  RefNos : string [];
 }
 
 export default function JoyOrderDashboardTemplate() {
@@ -125,6 +126,8 @@ export default function JoyOrderDashboardTemplate() {
   //@ts-ignore
   const maxCount = Math.max(...hourlyData.map((d) => d.count), 0);
   const currentHour = new Date().getHours();
+
+ 
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -197,7 +200,7 @@ export default function JoyOrderDashboardTemplate() {
               <Item>
                 <Card sx={{ height: 350 }}>
                   <CardOverflow>
-                    <AspectRatio ratio="2" sx={{ padding: 1 }}>
+                    <AspectRatio ratio="3" sx={{ padding: 1 }}>
                       <img src="https://static.wixstatic.com/media/cb773a_33b784a330d4441abbee8dec56ffb840~mv2.gif" />
                     </AspectRatio>
                   </CardOverflow>
@@ -209,7 +212,7 @@ export default function JoyOrderDashboardTemplate() {
                   </CardContent>
                   <Sheet
                     sx={{
-                      maxHeight: 100,
+                      maxHeight: 150,
                       overflow: "auto",
                       m: 1,
                     }}
@@ -309,9 +312,9 @@ export default function JoyOrderDashboardTemplate() {
                           {incoming.map((row) => (
                             <ListItem>
                               <ListItemButton component={RouterLink}
-                              to="/receiveinfo"
+                              to="/receiving"
                               state={{
-                                RefNo: [row.RefNo],
+                                RefNo: row.RefNos,
                               }}>
                               <Card
                                 sx={{ width: 500 }}
@@ -349,10 +352,10 @@ export default function JoyOrderDashboardTemplate() {
                 <Card
                   variant="outlined"
                   sx={{
-                    width: 320,
+                    
                     maxHeight: 350,
                     height: 350,
-                    marginRight: 1,
+                    
                   }}
                 >
                   <Sheet
@@ -392,10 +395,8 @@ export default function JoyOrderDashboardTemplate() {
                               <ListItemButton component={RouterLink}
                               to="/receiving"
                               state={{
-                                supplier: row.Supplier,
-                                date: today,
-                                eta_from: `${row.hour}:00`,
-                                eta_to: `${row.hour}:00`,
+                                RefNo: row.RefNos,
+                            
                               }}>
                               <Card
                                 sx={{ width: 500 }}
@@ -454,13 +455,18 @@ export default function JoyOrderDashboardTemplate() {
                       {Array.from({ length: 24 }).map((_, hour) => {
                         const cellData = hourlyData.find(d => d.hour === hour) || { hour, count: 0 };
                         const intensity = cellData.count / maxCount;
-                        let backgroundColor, textColor;
+                        let backgroundColor, textColor, cellClass = '';
+                        
 
                         if (hour < currentHour) {
                             backgroundColor = `rgba(255, 0, 0, ${intensity})`; // Red color for past hours
-                            textColor = intensity > 0.5 ? 'white' : 'black';
+                            textColor = intensity > 0.5 ? 'white' : 'black';}
+                        else if (hour === currentHour) {
+                          backgroundColor = `rgba(255, 234, 153, 3)`; // Yellow color for current hour
+                          cellClass = 'blink'; // Add class for blinking
+                            
                         } else {
-                            backgroundColor = `rgba(0, 0, 255, ${intensity})`; // Blue color for current and future hours
+                            backgroundColor = `rgba(0, 0, 251, ${intensity})`; // Blue color for current and future hours
                             textColor = intensity > 0.5 ? 'white' : 'black';
                         }
 
@@ -469,8 +475,8 @@ export default function JoyOrderDashboardTemplate() {
                        
                             <div
                                 key={hour}
-                                className="cell"
-                                style={{ backgroundColor, color: textColor }}
+                                className={`cell ${cellClass}`}
+                                style={{ backgroundColor, color: textColor}}
                             >
                                 <div>{cellData.count}</div>
                                 

@@ -2,21 +2,18 @@ import * as React from 'react';
 import { CssVarsProvider } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
-
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
+
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
-import SelectOrder from '../components/SelectOrder';
+import ScanInfo from '../components/ScanInfo';
 
 export default function JoyOrderDashboardTemplate() {
-
-
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
@@ -67,7 +64,7 @@ export default function JoyOrderDashboardTemplate() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Receive Order
+                Scan Info
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -83,11 +80,16 @@ export default function JoyOrderDashboardTemplate() {
             }}
           >
             <Typography level="h2" component="h1">
-              Search Order
+              Scan Info 
             </Typography>
-
+            <Box>
+              
+            </Box>
+            {/* <Barcode value="start" height={40}/>
+            <Barcode value="complete" height={40}/> */}
           </Box>
-            <SelectOrder />
+          <ScanInfo />
+
         </Box>
       </Box>
     </CssVarsProvider>

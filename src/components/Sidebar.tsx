@@ -21,6 +21,9 @@ import BrightnessAutoRoundedIcon from '@mui/icons-material/BrightnessAutoRounded
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {useNavigate,Link} from 'react-router-dom';
 import SettingsIcon from '@mui/icons-material/Settings';
+import logo from '../assets/logo.png';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+
 
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
@@ -112,7 +115,7 @@ export default function Sidebar() {
         onClick={() => closeSidebar()}
       />
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-        <Typography level="title-lg">Receiving System</Typography>
+      <img src={logo} height={150} width={150} style={{alignSelf:'center',position:'absolute',right:50, top:0}}/>
         <ColorSchemeToggle sx={{ ml: 'auto' }} />
       </Box>
     
@@ -138,7 +141,7 @@ export default function Sidebar() {
         >
         
 
-          <ListItem component={Link} to='/dashboard' sx={{marginTop:2}} >
+          <ListItem component={Link} to='/dashboard' sx={{marginTop:8}} >
             <ListItemButton>
               <DashboardRoundedIcon />
               <ListItemContent>
@@ -147,7 +150,7 @@ export default function Sidebar() {
             </ListItemButton>
           </ListItem>
 
-          <Chip sx={{marginTop:2}} color='success' variant='soft'>Receive</Chip>
+          <Chip sx={{marginTop:2}} color='primary' variant='solid'>⭐Receive</Chip>
           <ListItem component={Link} to='/selection'>
             <ListItemButton>
               <LocalShippingIcon />
@@ -187,7 +190,7 @@ export default function Sidebar() {
               </List>
             </Toggler>
           </ListItem>
-          <Chip sx={{marginTop:2}} color='warning' variant='soft'>Invoice</Chip>
+          <Chip sx={{marginTop:2}} color='primary' variant='solid'>⭐Invoice</Chip>
           <ListItem component={Link} to='/scanner' >
             
             <ListItemButton>
@@ -224,14 +227,25 @@ export default function Sidebar() {
             </Toggler>
           </ListItem>
 
-          <Chip sx={{marginTop:2}} color='danger' variant='soft'>Maintenance</Chip>
+          <Chip sx={{marginTop:2}} color='primary' variant='outlined'>Maintenance</Chip>
           <ListItem component={Link} to='/supplier' >
             <ListItemButton>
               <SettingsIcon />
               <ListItemContent>
-                <Typography level="title-sm">Manage Supplier</Typography>
+                <Typography level="title-sm">Partner Maintenance</Typography>
               </ListItemContent>
             </ListItemButton>
+            
+          </ListItem>
+
+          <ListItem component={Link} to='/supplier' >
+            <ListItemButton>
+              <PeopleAltIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Manage User</Typography>
+              </ListItemContent>
+            </ListItemButton>
+            
           </ListItem>
 
         </List>

@@ -77,7 +77,7 @@ export default function NestedCard() {
       <form onSubmit={handleSubmit}>
       <CardContent>
 
-        <Typography level="title-lg">Add Supplier</Typography>
+        <Typography level="title-lg" sx={{mb:2}}>Add Supplier</Typography>
       </CardContent>
      
         <Stack direction="row" spacing={10}
@@ -154,15 +154,19 @@ export default function NestedCard() {
             <tr key={row.id}>
               <td>{row.SupplierName}</td>
               <td>{row.SupplierFirstName}</td>
-              <td><Button size='sm' color='danger'
+              <td><Button size='sm' color='danger' variant='plain'
               onClick={()=>{
                 const response = axios.delete('/api/supplier.php', {
                   data: { id: row.id },
-                })
+                } )
 
                 alert('Supplier Removed');
-              }}
-              >Remove</Button></td>
+              }}sx={{mr:1}}
+              >Remove</Button>
+              <Button size='sm' color='primary' variant='plain'
+             
+              >Update</Button>
+              </td>
 
             </tr>
           ))}

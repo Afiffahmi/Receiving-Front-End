@@ -140,6 +140,7 @@ export default function OrderTable() {
   const [itemNo, setItemNo] = React.useState("");
   const [pono,setPONo] = React.useState('');
   const [planlot,setPlanLot] = React.useState('');
+  const [invno, setInvNo] = React.useState('');
   //@ts-ignore
   const [data, setData] = React.useState<Receive>({});
   const location = useLocation();
@@ -331,7 +332,7 @@ export default function OrderTable() {
 
         <CardActions  sx={{alignItem:'center',alignContent:'center',display:'flex',justifyContent:'center'}}>
           <FormControl error={refno != data.RefNo}>
-        <FormLabel>Ref No</FormLabel>
+        <FormLabel>Ref Number</FormLabel>
         <Input 
         value={refno}
         onChange={(e)=> {setRefno(e.target.value)}}
@@ -342,13 +343,13 @@ export default function OrderTable() {
         </FormControl>
        
         <FormControl error={itemNo != data.PartNo}>
-        <FormLabel>Part No</FormLabel>
+        <FormLabel>Part Number</FormLabel>
         <Input 
         value={itemNo}
         onChange={(e)=>{setItemNo(e.target.value)}}/>
         </FormControl>
         <FormControl error={pono != data.PONo}>
-        <FormLabel>PO No</FormLabel>
+        <FormLabel>PO Number</FormLabel>
         <Input 
         value={pono}
         onChange={(e)=>{setPONo(e.target.value)}}/>
@@ -359,9 +360,19 @@ export default function OrderTable() {
         value={planlot}
         onChange={(e)=>{setPlanLot(e.target.value)}}/>
         </FormControl>
+        <FormControl >
+        <FormLabel>Invoice Number</FormLabel>
+        <Input
+          color='primary'
+          value={invno}
+          onChange={(e)=>{setInvNo(e.target.value)}}
+        />
+        </FormControl>
         
         </CardActions>
-        <Button variant='solid' >Confirm</Button>
+        <Button variant='solid' 
+        disabled={!invno}
+        >Confirm</Button>
       </Card>
     </React.Fragment>
   );

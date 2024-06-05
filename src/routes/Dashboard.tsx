@@ -7,8 +7,6 @@ import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import Link from "@mui/joy/Link";
 import Typography from "@mui/joy/Typography";
 import { useLocation, Link as RouteLink } from "react-router-dom";
-import { Pie, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
 import ActivityLegend from "../ActivityLegend";
 import { Link as RouterLink } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -25,9 +23,7 @@ import Grid from "@mui/joy/Grid";
 import Header from "../components/Header";
 import Card from "@mui/joy/Card";
 import { Divider, Chip, Stack } from "@mui/joy";
-import DocumentScannerIcon from "@mui/icons-material/DocumentScanner";
 import axios from "axios";
-import Badge, { badgeClasses } from "@mui/joy/Badge";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
@@ -194,6 +190,8 @@ export default function JoyOrderDashboardTemplate() {
             <Typography level="h2" component="h1">
               Dashboard
             </Typography>
+
+            
           </Box>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
             <Grid xs={4}>
@@ -201,7 +199,7 @@ export default function JoyOrderDashboardTemplate() {
                 <Card sx={{ height: 350 }}>
                   <CardOverflow>
                     <AspectRatio ratio="3" sx={{ padding: 1 }}>
-                      <img src="https://static.wixstatic.com/media/cb773a_33b784a330d4441abbee8dec56ffb840~mv2.gif" />
+                      <img src={"https://static.wixstatic.com/media/cb773a_33b784a330d4441abbee8dec56ffb840~mv2.gif"} />
                     </AspectRatio>
                   </CardOverflow>
                   <CardOverflow>
@@ -453,6 +451,7 @@ export default function JoyOrderDashboardTemplate() {
                     <div>
                       <div className="grid">
                       {Array.from({ length: 24 }).map((_, hour) => {
+                        //@ts-ignore
                         const cellData = hourlyData.find(d => d.hour === hour) || { hour, count: 0 };
                         const intensity = cellData.count / maxCount;
                         let backgroundColor, textColor, cellClass = '';
@@ -492,17 +491,25 @@ export default function JoyOrderDashboardTemplate() {
             </Grid>
             <Grid xs={3}>
               <Item>
-                <Card sx={{ height: 150,width:310 }}>
-                  <CardContent>
+                <Card sx={{ height: 150,width:370 }}>
+                  <CardContent sx={{position:'flex',alignSelf:'center',justifyContent:'center',justifyItems:'center',}}>
                     <Typography level="title-lg">Legend</Typography>
                     <ActivityLegend maxCount={maxCount} />
+                    <Box component="footer" sx={{ }}>
+            <Typography level="body-xs" textAlign="center">
+              Copyright © MHC Fahmi Rachel {new Date().getFullYear()}
+            </Typography>
+          </Box>
                   </CardContent>
+                  
                 </Card>
               </Item>
-            </Grid>{" "}
+            </Grid>
           </Grid>
         </Box>
+        
       </Box>
+     
     </CssVarsProvider>
   );
 }

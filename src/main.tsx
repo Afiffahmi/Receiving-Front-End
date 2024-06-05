@@ -19,6 +19,7 @@ import Pending from './routes/Pending.tsx';
 import Supplier from './routes/Supplier.tsx';
 import Scanner from './routes/Scanner.tsx';
 import Scan from './routes/Scan.tsx';
+import Login from './routes/Login.tsx';
 import StartScan from './routes/StartScan.tsx';
 
 const rootContainer = document.getElementById("root");
@@ -28,10 +29,6 @@ if (!rootContainer) {
 }
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <FileUpload />,
-  },
   {
     path: "/receiving",
     element: <App />,
@@ -87,6 +84,10 @@ const router = createBrowserRouter([
   {
     path:'/scaninfo',
     element: <StartScan/>
+  },
+  {
+    path:'/',
+    element: <Login/>
   }
 ]);
 

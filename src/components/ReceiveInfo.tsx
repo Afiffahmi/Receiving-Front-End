@@ -9,7 +9,7 @@ import Barcode from "react-barcode";
 import Divider from "@mui/joy/Divider";
 import Link from "@mui/joy/Link";
 import Input from "@mui/joy/Input";
-import Modal from "@mui/joy/Modal";
+import Stack from "@mui/joy/Stack";
 import ModalDialog from "@mui/joy/ModalDialog";
 import { Transition } from "react-transition-group";
 import DialogTitle from "@mui/joy/DialogTitle";
@@ -181,6 +181,7 @@ export default function OrderTable() {
   const [input, setInput] = React.useState("");
   const [qty, setQty] = React.useState(0);
   const [focus, setFocus] = React.useState(true);
+  const [disable,setDisable] =React.useState(false);
 
   const [active, setActive] = React.useState(true);
   const [complete, setComplete] = React.useState(false);
@@ -225,7 +226,7 @@ export default function OrderTable() {
       setScan(scan + Number(item.qty));
     } else if (item.total < scan + Number(item.qty)) {
       toast.error("Quantity exceed actual receiving quantity", {
-        position: "bottom-right",
+        position: "bottom-center",
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -235,7 +236,7 @@ export default function OrderTable() {
       });
     } else if (scan == item.total) {
       toast.error("Scanned quantity completed", {
-        position: "bottom-right",
+        position: "bottom-center",
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -245,7 +246,7 @@ export default function OrderTable() {
       });
     } else if (item.scan !== item.itemNo) {
       toast.error("Invalid Part No", {
-        position: "bottom-right",
+        position: "bottom-center",
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -270,48 +271,48 @@ export default function OrderTable() {
     });
   };
 
-  const handleManual = () => {
-    if (input == itemNo && total >= scan + Number(qty)) {
-      setScan(scan + Number(qty));
-    } else if (total < scan + Number(qty)) {
-      toast.error("Quantity exceed actual receiving quantity", {
-        position: "bottom-right",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
-    } else if (scan == total) {
-      toast.error("Scanned quantity completed", {
-        position: "bottom-right",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
-    } else if (input !== itemNo) {
-      toast.error("Invalid Part No", {
-        position: "bottom-right",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
-    }
-    setInput("");
-    setQty(0);
-  };
+  // const handleManual = () => {
+  //   if (input == itemNo && total >= scan + Number(qty)) {
+  //     setScan(scan + Number(qty));
+  //   } else if (total < scan + Number(qty)) {
+  //     toast.error("Quantity exceed actual receiving quantity", {
+  //       position: "bottom-right",
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       theme: "light",
+  //       transition: Bounce,
+  //     });
+  //   } else if (scan == total) {
+  //     toast.error("Scanned quantity completed", {
+  //       position: "bottom-right",
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       theme: "light",
+  //       transition: Bounce,
+  //     });
+  //   } else if (input !== itemNo) {
+  //     toast.error("Invalid Part No", {
+  //       position: "bottom-right",
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       theme: "light",
+  //       transition: Bounce,
+  //     });
+  //   }
+  //   setInput("");
+  //   setQty(0);
+  // };
   const handleInput = (input: string) => {
     setInput(input);
 
     if (input == "complete") {
-      setOpen(true);
+      handleUpdate();
       setInput("");
     } else if (input == "reset") {
       setScan(0);
@@ -370,8 +371,9 @@ export default function OrderTable() {
       }
       setActive(false);
       setComplete(true);
+      setDisable(true);
       console.log("Update completed");
-      toast.success("Receiving completed", { position: "bottom-right" });
+      toast.success("Receiving completed", { position: "bottom-center" });
       setTimeout(() => {
         navigate("/receiving", {
           replace: true,
@@ -379,13 +381,13 @@ export default function OrderTable() {
         });
       }, 8000);
     } else {
-      toast.error("Please Scan the item first!", { position: "bottom-right" });
+      toast.error("Please Scan the item first!", { position: "bottom-center" });
     }
   };
 
   return (
     <React.Fragment>
-      <React.Fragment>
+      {/* <React.Fragment>
         <Transition in={open} timeout={400}>
           {(state: string) => (
             <Modal
@@ -423,77 +425,7 @@ export default function OrderTable() {
                   <Typography level="h2">Receiving Information</Typography>
                 </DialogTitle>
                 <DialogContent>
-                  <Stepper
-                    size="lg"
-                    sx={{
-                      width: "100%",
-                      "--StepIndicator-size": "3rem",
-                      "--Step-connectorInset": "0px",
-                      [`& .${stepIndicatorClasses.root}`]: {
-                        borderWidth: 4,
-                      },
-                      [`& .${stepClasses.root}::after`]: {
-                        height: 4,
-                      },
-                      [`& .${stepClasses.completed}`]: {
-                        [`& .${stepIndicatorClasses.root}`]: {
-                          borderColor: "primary.300",
-                          color: "primary.300",
-                        },
-                        "&::after": {
-                          bgcolor: "primary.300",
-                        },
-                      },
-                      [`& .${stepClasses.active}`]: {
-                        [`& .${stepIndicatorClasses.root}`]: {
-                          borderColor: "currentColor",
-                        },
-                      },
-                      [`& .${stepClasses.disabled} *`]: {
-                        color: "neutral.outlinedDisabledColor",
-                      },
-                    }}
-                  >
-                    <Step
-                      completed
-                      orientation="vertical"
-                      indicator={
-                        <StepIndicator variant="outlined" color="primary">
-                          <ShoppingCartRoundedIcon />
-                        </StepIndicator>
-                      }
-                    />
-                    <Step
-                      orientation="vertical"
-                      completed
-                      indicator={
-                        <StepIndicator variant="outlined" color="primary">
-                          <ContactsRoundedIcon />
-                        </StepIndicator>
-                      }
-                    />
-                    <Step
-                      orientation="vertical"
-                      active={active}
-                      completed={complete}
-                      indicator={
-                        <StepIndicator variant="outlined" color="primary">
-                          <LocalShippingRoundedIcon />
-                        </StepIndicator>
-                      }
-                    />
-
-                    <Step
-                      orientation="vertical"
-                      active={!active}
-                      completed={!complete}
-                      indicator={
-                        <StepIndicator variant="outlined" color="neutral">
-                          <CheckCircleRoundedIcon />
-                        </StepIndicator>
-                      }
-                    />
-                  </Stepper>
+                  
                   <Sheet
                     sx={{
                       bgcolor: "background.level1",
@@ -549,7 +481,7 @@ export default function OrderTable() {
             </Modal>
           )}
         </Transition>
-      </React.Fragment>
+      </React.Fragment> */}
       <ToastContainer
         position="top-center"
         hideProgressBar={false}
@@ -688,6 +620,80 @@ export default function OrderTable() {
           </tbody>
         </Table>
       </Sheet>
+      <Stack sx={{alignSelf:'center',alignItem:'center',alignContent:'center',display:'flex',justifyContent:'center',my:2}}>
+      <Stepper
+                    size="lg"
+                    sx={{
+                      display:'flex',
+                      width:'600px',
+                      "--StepIndicator-size": "3rem",
+                      "--Step-connectorInset": "0px",
+                      [`& .${stepIndicatorClasses.root}`]: {
+                        borderWidth: 4,
+                      },
+                      [`& .${stepClasses.root}::after`]: {
+                        height: 4,
+                      },
+                      [`& .${stepClasses.completed}`]: {
+                        [`& .${stepIndicatorClasses.root}`]: {
+                          borderColor: "primary.300",
+                          color: "primary.300",
+                        },
+                        "&::after": {
+                          bgcolor: "primary.300",
+                        },
+                      },
+                      [`& .${stepClasses.active}`]: {
+                        [`& .${stepIndicatorClasses.root}`]: {
+                          borderColor: "currentColor",
+                        },
+                      },
+                      [`& .${stepClasses.disabled} *`]: {
+                        color: "neutral.outlinedDisabledColor",
+                      },
+                      my:2
+                    }}
+                  >
+                    <Step
+                      completed
+                      orientation="vertical"
+                      indicator={
+                        <StepIndicator variant="outlined" color="primary">
+                          <ShoppingCartRoundedIcon />
+                        </StepIndicator>
+                      }
+                    />
+                    <Step
+                      orientation="vertical"
+                      completed
+                      indicator={
+                        <StepIndicator variant="outlined" color="primary">
+                          <ContactsRoundedIcon />
+                        </StepIndicator>
+                      }
+                    />
+                    <Step
+                      orientation="vertical"
+                      active={active}
+                      completed={complete}
+                      indicator={
+                        <StepIndicator variant="outlined" color="primary">
+                          <LocalShippingRoundedIcon />
+                        </StepIndicator>
+                      }
+                    />
+
+                    <Step
+                      orientation="vertical"
+                      active={!active}
+                      completed={!complete}
+                      indicator={
+                        <StepIndicator variant="outlined" color="neutral">
+                          <CheckCircleRoundedIcon />
+                        </StepIndicator>
+                      }
+                    />
+                  </Stepper></Stack>
       <Card variant="solid" color="primary" invertedColors>
         <CardContent orientation="horizontal">
           <Typography>Total Scan:</Typography>
@@ -703,9 +709,10 @@ export default function OrderTable() {
           <Avatar>
             <Typography level="title-sm">{total}</Typography>
           </Avatar>
+          
         </CardContent>
-
-        <CardActions>
+                      
+        <CardActions sx={{justifyContent:'space-between'}}>
           <Input
             variant="soft"
             value={input}
@@ -716,6 +723,11 @@ export default function OrderTable() {
             type="text"
             autoFocus={focus}
           />
+          
+            <Barcode value={'complete'} width={2} height={30} background="#0B6BCB" fontOptions="color: #ffffff"/>
+          
+          
+          
 
           {/* <Input
           className='secondInput'
@@ -736,9 +748,10 @@ export default function OrderTable() {
             Scan
           </Button> */}
         </CardActions>
-        <Button color="warning" onClick={handleReceive}>
+        <Button color="warning" onClick={handleUpdate} disabled={disable}>
           Received
         </Button>
+        
       </Card>
     </React.Fragment>
   );

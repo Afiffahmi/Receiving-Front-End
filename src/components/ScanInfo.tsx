@@ -177,6 +177,16 @@ export default function OrderTable() {
     fetchData();
   }, []);
 
+  const handleChecker = () => {
+
+    if(data.RefNo === refno && data.PartNo === itemNo && data.PONo === pono && data.JOCPlanLot === planlot){
+    alert('Match!');
+    }else{
+      alert('Not Match!');
+    }
+  }
+
+
 
   return (
     <React.Fragment>
@@ -220,6 +230,9 @@ export default function OrderTable() {
           flexShrink: 0,
           overflow: "auto",
           minHeight: 0,
+          justifyContent:'center',
+          alignSelf:'center',
+          
         }}
       >
         <Table
@@ -336,6 +349,7 @@ export default function OrderTable() {
         <Input 
         value={refno}
         onChange={(e)=> {setRefno(e.target.value)}}
+        required
         />
         <FormHelperText>
 
@@ -346,19 +360,25 @@ export default function OrderTable() {
         <FormLabel>Part Number</FormLabel>
         <Input 
         value={itemNo}
-        onChange={(e)=>{setItemNo(e.target.value)}}/>
+        onChange={(e)=>{setItemNo(e.target.value)}}
+        required
+        />
         </FormControl>
         <FormControl error={pono != data.PONo}>
         <FormLabel>PO Number</FormLabel>
         <Input 
         value={pono}
-        onChange={(e)=>{setPONo(e.target.value)}}/>
+        onChange={(e)=>{setPONo(e.target.value)}}
+        required
+        />
         </FormControl>
         <FormControl error={planlot != data.JOCPlanLot}>
         <FormLabel>Plan Lot</FormLabel>
         <Input
         value={planlot}
-        onChange={(e)=>{setPlanLot(e.target.value)}}/>
+        onChange={(e)=>{setPlanLot(e.target.value)}}
+        required
+        />
         </FormControl>
         <FormControl >
         <FormLabel>Invoice Number</FormLabel>
@@ -366,12 +386,15 @@ export default function OrderTable() {
           color='primary'
           value={invno}
           onChange={(e)=>{setInvNo(e.target.value)}}
+          required
         />
         </FormControl>
         
         </CardActions>
         <Button variant='solid' 
+        onClick={handleChecker}
         disabled={!invno}
+        
         >Confirm</Button>
       </Card>
     </React.Fragment>

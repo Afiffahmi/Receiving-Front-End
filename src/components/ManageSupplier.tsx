@@ -2,6 +2,15 @@ import * as React from 'react';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import { useNavigate,Link } from 'react-router-dom';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import DialogTitle from '@mui/joy/DialogTitle';
+import DialogContent from '@mui/joy/DialogContent';
+
+import Add from '@mui/icons-material/Add';
 
 import CardOverflow from '@mui/joy/CardOverflow';
 import Typography from '@mui/joy/Typography';
@@ -32,6 +41,8 @@ export default function NestedCard() {
     const [supplierFirstName, setSupplierFirstName] = React.useState('');
     const [timeTo,setTimeTo] = React.useState<string>('');
     const [stripe, setStripe] = React.useState('odd');
+    const [open, setOpen] = React.useState<boolean>(false);
+    const [supplierID, setSupplierID] = React.useState<number>(0);
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -73,6 +84,40 @@ export default function NestedCard() {
 
   return (
     <Sheet>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <ModalDialog>
+          <DialogTitle>Update Partner detail</DialogTitle>
+          <DialogContent>Fill in the information of partner.</DialogContent>
+          <form
+            onSubmit={async (event: React.FormEvent<HTMLFormElement>)  => {
+              event.preventDefault();
+              const response = await axios.put('/api/supplier.php', {
+                id: supplierID,
+        supplierName: supplierName,
+        supplierFirstName: supplierFirstName,
+              });
+
+              alert(response.data.message);
+              setSupplierName('');
+              setSupplierFirstName('');
+              setSupplierID(0);
+              setOpen(false);
+            }}
+          >
+            <Stack spacing={2}>
+              <FormControl>
+                <FormLabel>Partner Name</FormLabel>
+                <Input autoFocus required value={supplierName} onChange={(e)=>{setSupplierName(e.target.value)}}/>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Searchable</FormLabel>
+                <Input required value={supplierFirstName} onChange={(e)=>{setSupplierFirstName(e.target.value)}}/>
+              </FormControl>
+              <Button type="submit">Submit</Button>
+            </Stack>
+          </form>
+        </ModalDialog>
+      </Modal>
     <Card sx={{ borderRadius: 10,alignContent:'center',alignSelf:'center',display:'flex' }}>
       <form onSubmit={handleSubmit}>
       <CardContent>
@@ -154,7 +199,17 @@ export default function NestedCard() {
             <tr key={row.id}>
               <td>{row.SupplierName}</td>
               <td>{row.SupplierFirstName}</td>
-              <td><Button size='sm' color='danger' variant='plain'
+              <td>
+              <Button size='sm' color='primary' variant='plain'
+       
+             onClick={() => {
+              setOpen(true)
+              setSupplierName(row.SupplierName);
+              setSupplierFirstName(row.SupplierFirstName);
+              setSupplierID(row.id);
+            }}
+              >Update</Button>
+              <Button size='sm' color='danger' variant='outlined'
               onClick={()=>{
                 const response = axios.delete('/api/supplier.php', {
                   data: { id: row.id },
@@ -163,9 +218,6 @@ export default function NestedCard() {
                 alert('Supplier Removed');
               }}sx={{mr:1}}
               >Remove</Button>
-              <Button size='sm' color='primary' variant='plain'
-             
-              >Update</Button>
               </td>
 
             </tr>

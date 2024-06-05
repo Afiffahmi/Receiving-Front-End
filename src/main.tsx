@@ -21,6 +21,7 @@ import Scanner from './routes/Scanner.tsx';
 import Scan from './routes/Scan.tsx';
 import Login from './routes/Login.tsx';
 import StartScan from './routes/StartScan.tsx';
+import Invoice from './routes/Invoice.tsx';
 
 const rootContainer = document.getElementById("root");
 
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
   {
     path:'/',
     element: <Login/>
+  },
+  {
+    path:'/scan_pending',
+    element: <Invoice/>
   }
 ]);
 

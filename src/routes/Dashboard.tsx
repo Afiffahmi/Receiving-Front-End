@@ -124,7 +124,6 @@ export default function JoyOrderDashboardTemplate() {
   const currentHour = new Date().getHours();
 
  
-
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
@@ -191,15 +190,17 @@ export default function JoyOrderDashboardTemplate() {
               Dashboard
             </Typography>
 
-            
+            <Typography level="body-md">
+              OCR Receiving Information System
+            </Typography>
           </Box>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
             <Grid xs={4}>
               <Item>
                 <Card sx={{ height: 350 }}>
                   <CardOverflow>
-                    <AspectRatio ratio="3" sx={{ padding: 1 }}>
-                      <img src={"https://static.wixstatic.com/media/cb773a_33b784a330d4441abbee8dec56ffb840~mv2.gif"} />
+                    <AspectRatio ratio="2.8" sx={{ padding: 1 }}>
+                      <img src={"https://st3.depositphotos.com/13015664/35972/v/450/depositphotos_359726642-stock-illustration-yellow-cartoon-delivery-van-city.jpg"} style={{top:0,position:'absolute',marginBottom:10,}} />
                     </AspectRatio>
                   </CardOverflow>
                   <CardOverflow>

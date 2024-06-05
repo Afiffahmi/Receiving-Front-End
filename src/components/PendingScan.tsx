@@ -127,10 +127,10 @@ export default function OrderTable() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/pendingData.php", {
+        const response = await axios.get("/api/pendingInvoice.php", {
           params: item,
         });
-        setRows(response.data);
+        setRows(response.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -150,7 +150,7 @@ export default function OrderTable() {
 
   const fetchData = async (input: string) => {
     try {
-      const response = await axios.get("/api/pendingData.php", {
+      const response = await axios.get("/api/pendingInvoice.php", {
         params: {
           ...item,
           part_no: input,
@@ -160,7 +160,7 @@ export default function OrderTable() {
         },
       });
 
-      setRows(response.data);
+      setRows(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle errors gracefully (e.g., display error message to user)
@@ -173,7 +173,7 @@ export default function OrderTable() {
   ) => {
     setSupplier(newValue!);
     try {
-      const response = await axios.get("/api/pendingData.php", {
+      const response = await axios.get("/api/pendingInvoice.php", {
         params: {
           ...item,
           supplier: newValue,
@@ -183,7 +183,7 @@ export default function OrderTable() {
         },
       });
 
-      setRows(response.data);
+      setRows(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle errors gracefully (e.g., display error message to user)
@@ -194,7 +194,7 @@ export default function OrderTable() {
     setDate(input);
 
     try {
-      const response = await axios.get("/api/pendingData.php", {
+      const response = await axios.get("/api/pendingInvoice.php", {
         params: {
           ...item,
           date: input,
@@ -204,7 +204,7 @@ export default function OrderTable() {
         },
       });
 
-      setRows(response.data);
+      setRows(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle errors gracefully (e.g., display error message to user)
@@ -221,7 +221,7 @@ export default function OrderTable() {
       eta_to: input,
     });
     try {
-      const response = await axios.get("/api/pendingData.php", {
+      const response = await axios.get("/api/pendingInvoice.php", {
         params: {
           ...item,
           date: Date,
@@ -231,7 +231,7 @@ export default function OrderTable() {
         },
       });
 
-      setRows(response.data);
+      setRows(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle errors gracefully (e.g., display error message to user)
@@ -241,7 +241,7 @@ export default function OrderTable() {
   const fetchEta = async (input: string) => {
     setETA(input);
     try {
-      const response = await axios.get("/api/pendingData.php", {
+      const response = await axios.get("/api/pendingInvoice.php", {
         params: {
           ...item,
           date: Date,
@@ -251,7 +251,7 @@ export default function OrderTable() {
         },
       });
 
-      setRows(response.data);
+      setRows(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle errors gracefully (e.g., display error message to user)
@@ -372,7 +372,7 @@ export default function OrderTable() {
                   sx={{ verticalAlign: "text-bottom" }}
                 />
               </th>
-              <th style={{ width: 80, padding: "12px 6px" }}>
+              <th style={{ width: 60, padding: "12px 6px" }}>
                 <Link
                   underline="none"
                   color="primary"
@@ -391,15 +391,15 @@ export default function OrderTable() {
                   RefNo
                 </Link>
               </th>
-              <th style={{ width: 80, padding: "12px 6px" }}>Part No</th>
+              <th style={{ width: 60, padding: "12px 6px" }}>Part No</th>
               <th style={{ width: 120, padding: "12px 6px" }}>Description</th>
-              <th style={{ width: 150, padding: "12px 6px" }}>Supplier</th>
-              <th style={{ width: 80, padding: "12px 6px" }}>PO No</th>
-              <th style={{ width: 60, padding: "12px 6px" }}>Qty</th>
-              <th style={{ width: 70, padding: "12px 6px" }}>WS CD</th>
+              <th style={{ width: 120, padding: "12px 6px" }}>Supplier</th>
+              <th style={{ width: 50, padding: "12px 6px" }}>PO No</th>
+
+              <th style={{ width: 50, padding: "12px 6px" }}>WS CD</th>
               
               <th style={{ width: 80, padding: "12px 6px" }}>Date</th>
-              <th style={{ width: 80, padding: "12px 6px" }}>ETA</th>
+              <th style={{ width: 50, padding: "12px 6px" }}>ETA</th>
               <th style={{ width: 70, padding: "12px 6px" }}>JOC/Plan lot</th>
               <th style={{ width: 65, padding: "12px 6px" }}>status</th>
             </tr>
@@ -438,9 +438,6 @@ export default function OrderTable() {
                 <td>
                   <Typography level="body-xs">{row.PONo}</Typography>
                 </td>
-                <td>
-                  <Typography level="body-xs">{row.Qty}</Typography>
-                </td>
 
                 <td>
                   <Typography level="body-xs">{row.WsCd}</Typography>
@@ -459,7 +456,7 @@ export default function OrderTable() {
                   <Typography level="body-xs">{row.JOCPlanLot}</Typography>
                 </td>
                 <td>
-                  <Chip variant='solid' color='danger'>Pending</Chip>
+                  <Chip variant='solid' color='success'>Ready Scan</Chip>
                 </td>
               </tr>
             ))}
@@ -481,7 +478,7 @@ export default function OrderTable() {
       >
         <Button
           component={RouterLink}
-          to="/selection"
+          to="/scanner"
           size="sm"
           variant="outlined"
           color="neutral"
@@ -496,7 +493,7 @@ export default function OrderTable() {
           color="neutral"
           endDecorator={<KeyboardArrowRightIcon />}
           component={RouterLink}
-          to="/receiveinfo"
+          to="/scaninfo"
           state={{
             RefNo: selected,
           }}

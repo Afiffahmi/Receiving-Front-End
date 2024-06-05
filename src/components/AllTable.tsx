@@ -117,6 +117,7 @@ export default function OrderTable() {
   const location = useLocation();
   const [suppliers,setSuppliers] = React.useState<Supplier[]>([]);
   const item = location.state;
+  let totalqty;
 
 React.useEffect(() => {
   const fetchData = async () => {
@@ -387,6 +388,17 @@ const fetchEta = async (input: string) => {
                 <td>
                 <Typography level='title-sm'>WsCd</Typography>
                   <Typography level="body-xs">{row.WsCd}</Typography>
+                </td>
+
+                <td style={{width:100}}>
+                <Typography level='title-sm'>Received Qty</Typography>
+                
+                <Typography level="body-xs">{totalqty = row.consume_data.reduce((a, b) => a + b.rcv_qty, 0)}</Typography>
+             
+                  </td>
+                  <td style={{width:80}}>
+                  <Typography level='title-sm'>Order Qty</Typography>
+                  <Chip color='danger' variant='outlined' size='sm'>{row.Qty + totalqty}</Chip>
                 </td>
                 
 

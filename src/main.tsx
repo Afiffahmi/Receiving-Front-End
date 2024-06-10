@@ -8,7 +8,6 @@ import {
 import './index.css'
 import Confirmation from './routes/Confirmation.tsx';
 import Selection from './routes/Selection.tsx';
-import FileUpload from './components/FileUpload.tsx';
 import CompleteReceive from './routes/CompleteReceive.tsx';
 import Transaction from './routes/Transaction.tsx';
 import Dashboard from './routes/Dashboard.tsx';
@@ -22,6 +21,11 @@ import Scan from './routes/Scan.tsx';
 import Login from './routes/Login.tsx';
 import StartScan from './routes/StartScan.tsx';
 import Invoice from './routes/Invoice.tsx';
+import InvoiceComplete from './routes/InvoiceComplete.tsx';
+import Protected from "./components/Protected";
+import Register from "./routes/Register";
+import FileUpload from "./components/FileUpload";
+import Admin from "./routes/Admin";
 
 const rootContainer = document.getElementById("root");
 
@@ -32,59 +36,59 @@ if (!rootContainer) {
 const router = createBrowserRouter([
   {
     path: "/receiving",
-    element: <App />,
+    element: <Protected Component={App}/>,
   },
   {
     path: "/receiveinfo",
-    element: <Confirmation />,
+    element: <Protected Component={Confirmation}/>,
   },
   {
     path:"/selection",
-    element: <Selection />,
+    element: <Protected Component={Selection}/>,
   },
   {
     path:"/complete",
-    element: <CompleteReceive />,
+    element: <Protected Component={CompleteReceive}/>,
   },
   {
     path:'/transaction',
-    element: <Transaction/>
+    element: <Protected Component={Transaction}/>
   },
   {
     path:'/dashboard',
-    element: <Dashboard/>
+    element: <Protected Component={Dashboard}/>
   },
   {
     path:'/scan',
-    element: <ScanItem />
+    element: <Protected Component={ScanItem}/>
   },
   {
     path:'/scanqty',
-    element: <ScanQty/>
+    element: <Protected Component={ScanQty}/>
   },
   {
     path:'/alldelivery',
-    element: <All />
+    element: <Protected Component={All}/>
   },
   {
     path:'/pending',
-    element: <Pending />
+    element: <Protected Component={Pending}/>
   },
   {
     path:'/supplier',
-    element: <Supplier />
+    element: <Protected Component={Supplier}/>
   },
   {
     path:'/scanner',
-    element: <Scanner/>
+    element: <Protected Component={Scanner}/>
   },
   {
     path:'/scanning',
-    element: <Scan/>
+    element: <Protected Component={Scan}/>
   },
   {
     path:'/scaninfo',
-    element: <StartScan/>
+    element: <Protected Component={StartScan}/>
   },
   {
     path:'/',
@@ -92,7 +96,23 @@ const router = createBrowserRouter([
   },
   {
     path:'/scan_pending',
-    element: <Invoice/>
+    element: <Protected Component={Invoice}/>
+  },
+  {
+    path:'/scan_complete',
+    element: <Protected Component={InvoiceComplete}/>
+  },
+  {
+    path:'/register',
+    element: <Register/>
+  },
+  {
+    path:'/upload',
+    element: <FileUpload/>
+  },
+  {
+    path:'/admin',
+    element: <Protected Component={Admin}/>
   }
 ]);
 

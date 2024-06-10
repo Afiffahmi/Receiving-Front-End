@@ -2,7 +2,7 @@ import React from 'react';
 import './Legend.css';
 
 const Legend = ({ maxCount }:any) => {
-    const steps = 3; // Number of steps in the legend
+    const steps = 4; // Number of steps in the legend
     const stepSize = maxCount / steps;
 
     return (
@@ -18,10 +18,10 @@ const Legend = ({ maxCount }:any) => {
                     return (
                         <div key={i} className="legend-step-container">
                             <div className="legend-step" style={{ backgroundColor: backgroundColorBlue, color }}>
-                                {count}
+                                
                             </div>
                             <div className="legend-step" style={{ backgroundColor: backgroundColorRed, color }}>
-                                {count}
+                                
                             </div>
                         </div>
                     );

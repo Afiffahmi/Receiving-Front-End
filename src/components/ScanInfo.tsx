@@ -18,14 +18,21 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import CardActions from "@mui/joy/CardActions";
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FormControl, FormHelperText, FormLabel, Stack } from "@mui/joy";
+import {
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Stack,
+  Select,
+  Option,
+} from "@mui/joy";
 
 export interface Receive {
   id: string;
@@ -101,7 +108,6 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-
 export default function OrderTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [rows, setRows] = React.useState<Receive[]>([
@@ -136,11 +142,20 @@ export default function OrderTable() {
       },
     },
   ]);
-  const [refno,setRefno] = React.useState('');
+
+  interface Supplier {
+    id: number;
+    SupplierName: string;
+    SupplierFirstName: string;
+  }
+
+  const [refno, setRefno] = React.useState("");
   const [itemNo, setItemNo] = React.useState("");
-  const [pono,setPONo] = React.useState('');
-  const [planlot,setPlanLot] = React.useState('');
-  const [invno, setInvNo] = React.useState('');
+  const [pono, setPONo] = React.useState("");
+  const [planlot, setPlanLot] = React.useState("");
+  const [invno, setInvNo] = React.useState("");
+  const [qty, setQty] = React.useState(0);
+  const [suppliers, setSuppliers] = React.useState<Supplier[]>([]);
   //@ts-ignore
   const [data, setData] = React.useState<Receive>({});
   const location = useLocation();
@@ -150,7 +165,7 @@ export default function OrderTable() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post("/api/selectedReceive.php", item);
+        const response = await axios.post("/api/selectedScan.php", item);
         if (response.data.data) {
           setRows(response.data.data);
           setData(response.data.data[0]);
@@ -175,22 +190,64 @@ export default function OrderTable() {
     };
 
     fetchData();
+    fetchSuppliers();
   }, []);
 
-  const handleChecker = () => {
+  const dataID = {
+    id: data.receiveID,
+    invNo: invno,
+  };
 
-    if(data.RefNo === refno && data.PartNo === itemNo && data.PONo === pono && data.JOCPlanLot === planlot){
-    alert('Match!');
-    }else{
-      alert('Not Match!');
+  const handleChecker = async () => {
+    if (
+      data.RefNo === refno &&
+      data.PartNo === itemNo &&
+      data.PONo === pono &&
+      data.JOCPlanLot === planlot &&
+      data.Qty == qty
+    ) {
+      const response = await axios
+        .post("/api/pendingInvoice.php", dataID)
+        .then((response) => {
+          console.log(response);
+          if (response.data.message) {
+            toast.success(response.data.message, {
+              position: "bottom-right",
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              theme: "light",
+              transition: Bounce,
+            });
+          } else if (response.data.error) {
+            toast.error(response.data.error, {
+              position: "bottom-right",
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              theme: "light",
+              transition: Bounce,
+            });
+          }
+        });
+    } else {
+      alert("Not Match!");
     }
-  }
+  };
 
-
+  const fetchSuppliers = async () => {
+    try {
+      const response = await axios.get("/api/supplierData.php");
+      setSuppliers(response.data.data);
+    } catch (error) {
+      console.error("Error fetching suppliers:", error);
+    }
+  };
 
   return (
     <React.Fragment>
-     
       <ToastContainer
         position="top-center"
         hideProgressBar={false}
@@ -211,11 +268,7 @@ export default function OrderTable() {
           startDecorator={<SearchIcon />}
           sx={{ flexGrow: 1 }}
         />
-        <IconButton
-          size="sm"
-          variant="outlined"
-          color="neutral"
-        >
+        <IconButton size="sm" variant="outlined" color="neutral">
           <FilterAltIcon />
         </IconButton>
       </Sheet>
@@ -230,9 +283,8 @@ export default function OrderTable() {
           flexShrink: 0,
           overflow: "auto",
           minHeight: 0,
-          justifyContent:'center',
-          alignSelf:'center',
-          
+          justifyContent: "center",
+          alignSelf: "center",
         }}
       >
         <Table
@@ -331,71 +383,145 @@ export default function OrderTable() {
           </tbody>
         </Table>
       </Sheet>
-      <Typography sx={{display:'flex',justifyContent:'center'}}>Upload invoice:</Typography>
-      <Stack direction={'row'} sx={{alignItem:'center',alignContent:'center',display:'flex',justifyContent:'center',my:2}}>
-        <Input type='file' variant='outlined' sx={{mr:1}}/>
-        <Button variant='solid' >Upload</Button>
+      <Typography sx={{ display: "flex", justifyContent: "center" }}>
+        Upload invoice:
+      </Typography>
+      <Stack
+        direction={"row"}
+        sx={{
+          alignItem: "center",
+          alignContent: "center",
+          display: "flex",
+          justifyContent: "center",
+          my: 2,
+        }}
+      >
+        <FormControl size="sm">
+          <FormLabel>Supplier</FormLabel>
+          <Select
+            onChange={fetchSuppliers}
+            size="sm"
+            placeholder="OCR Supplier"
+            slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
+          >
+            <Option value="">All</Option>
+            {suppliers.map((supplier) => (
+              <Option key={supplier.id} value={supplier.SupplierFirstName}>
+                {supplier.SupplierName}
+              </Option>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl size="sm" sx={{ mx: 1 }}>
+          <FormLabel>Upload Scanned Invoice</FormLabel>
+          <Input type="file" variant="outlined" />
+        </FormControl>
+        <FormControl size="sm" sx={{ mt: 2 }}>
+          <FormLabel></FormLabel>
+          <Button variant="solid">Upload</Button>
+        </FormControl>
       </Stack>
-      
-      <Card variant="soft" color="neutral" >
-        <CardContent orientation="horizontal" >
-         <Typography level='title-md' >Scan Result</Typography>
-        
+
+      <Card variant="soft" color="neutral">
+        <CardContent orientation="horizontal">
+          <Typography level="title-md">Scan Result</Typography>
         </CardContent>
 
-        <CardActions  sx={{alignItem:'center',alignContent:'center',display:'flex',justifyContent:'center'}}>
-          <FormControl error={refno != data.RefNo}>
-        <FormLabel>Ref Number</FormLabel>
-        <Input 
-        value={refno}
-        onChange={(e)=> {setRefno(e.target.value)}}
-        required
-        />
-        <FormHelperText>
+        <CardActions
+          sx={{
+            alignItem: "center",
+            alignContent: "center",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Stack direction="column" spacing={2}>
+            <FormControl error={refno != data.RefNo}>
+              <FormLabel>Ref Number</FormLabel>
+              <Input
+                value={refno}
+                onChange={(e) => {
+                  setRefno(e.target.value);
+                }}
+                required
+              />
+              <FormHelperText></FormHelperText>
+            </FormControl>
 
-        </FormHelperText>
-        </FormControl>
-       
-        <FormControl error={itemNo != data.PartNo}>
-        <FormLabel>Part Number</FormLabel>
-        <Input 
-        value={itemNo}
-        onChange={(e)=>{setItemNo(e.target.value)}}
-        required
-        />
-        </FormControl>
-        <FormControl error={pono != data.PONo}>
-        <FormLabel>PO Number</FormLabel>
-        <Input 
-        value={pono}
-        onChange={(e)=>{setPONo(e.target.value)}}
-        required
-        />
-        </FormControl>
-        <FormControl error={planlot != data.JOCPlanLot}>
-        <FormLabel>Plan Lot</FormLabel>
-        <Input
-        value={planlot}
-        onChange={(e)=>{setPlanLot(e.target.value)}}
-        required
-        />
-        </FormControl>
-        <FormControl >
-        <FormLabel>Invoice Number</FormLabel>
-        <Input
-          color='primary'
-          value={invno}
-          onChange={(e)=>{setInvNo(e.target.value)}}
-          required
-        />
-        </FormControl>
-        
+            <FormControl error={itemNo != data.PartNo}>
+              <FormLabel>Part Number</FormLabel>
+              <Input
+                value={itemNo}
+                onChange={(e) => {
+                  setItemNo(e.target.value);
+                }}
+                required
+              />
+            </FormControl>
+          </Stack>
+
+          <Stack direction="column" spacing={2}>
+            <FormControl error={qty != data.Qty}>
+              <FormLabel>Quantity</FormLabel>
+              <Input 
+              value={qty}
+              onChange={(e) => {
+                setQty(Number(e.target.value));
+              }}
+               required />
+            </FormControl>
+            <FormControl error={pono != data.PONo}>
+              <FormLabel>PO Number</FormLabel>
+              <Input
+              disabled={/[a-zA-Z]+/.test(data.PONo)}
+                value={pono}
+                onChange={(e) => {
+                  setPONo(e.target.value);
+                }}
+                required
+              />
+            </FormControl>
+          </Stack>
+
+          <Stack direction="column" spacing={2}>
+            <FormControl error={planlot != data.JOCPlanLot}>
+              <FormLabel>Plan Lot</FormLabel>
+              <Input
+                value={planlot}
+                onChange={(e) => {
+                  setPlanLot(e.target.value);
+                }}
+                required
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Invoice Number</FormLabel>
+              <Input
+                color="primary"
+                value={invno}
+                onChange={(e) => {
+                  setInvNo(e.target.value);
+                }}
+                required
+              />
+            </FormControl>
+          </Stack>
         </CardActions>
-        <Button variant='solid' 
-        onClick={handleChecker}
-        disabled={!invno}
-        
-        >Confirm</Button>
+        <Button
+          variant="solid"
+          onClick={handleChecker}
+          disabled={!invno}
+          sx={{
+            width: 200,
+            justifyContent: "center",
+            alignContent: "center",
+            alignItem: "center",
+            display: "flex",
+            alignSelf: "center",
+          }}
+        >
+          Confirm
+        </Button>
       </Card>
     </React.Fragment>
   );

@@ -48,7 +48,7 @@ export default function NestedCard() {
     const isFormValid = () => supplier !== '' && date !== '';  
 
   return (
-    <Card sx={{ borderRadius: 0, width: 1080, maxWidth: '100%' }}>
+    <Card sx={{ borderRadius: 0}}>
       <CardContent>
         <Typography level="body-xs">Search</Typography>
         <Typography level="title-lg">For receiving</Typography>

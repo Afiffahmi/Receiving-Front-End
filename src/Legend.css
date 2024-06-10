@@ -22,8 +22,8 @@
 }
 
 .legend-step {
-    width: 60px; /* Adjust width for better visibility */
-    height: 30px;
+    width: 20px; /* Adjust width for better visibility */
+    height: 20px;
     border-radius: 60px;
     display: flex;
     align-items: center;

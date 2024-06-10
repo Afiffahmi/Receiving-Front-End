@@ -22,10 +22,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {useNavigate,Link} from 'react-router-dom';
 import SettingsIcon from '@mui/icons-material/Settings';
 import logo from '../assets/logo.png';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-
-
-import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
 import { Chip } from '@mui/joy';
 
@@ -61,7 +57,19 @@ function Toggler({
   );
 }
 
+
 export default function Sidebar() {
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate('/',{replace:true});
+  };
+
+  const id = (localStorage.getItem("token") ? JSON.parse(localStorage.getItem("token") as string) : ""  );
+
+  
   return (
     <Sheet
       className="Sidebar"
@@ -116,7 +124,7 @@ export default function Sidebar() {
       />
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
       <img src={logo} height={150} width={150} style={{alignSelf:'center',position:'absolute',right:50, top:0}}/>
-        <ColorSchemeToggle sx={{ ml: 'auto' }} />
+        
       </Box>
     
       <Box
@@ -141,7 +149,7 @@ export default function Sidebar() {
         >
         
 
-          <ListItem component={Link} to='/dashboard' sx={{marginTop:8}} >
+          <ListItem component={Link} to='/dashboard' sx={{marginTop:10}} >
             <ListItemButton>
               <DashboardRoundedIcon />
               <ListItemContent>
@@ -150,7 +158,7 @@ export default function Sidebar() {
             </ListItemButton>
           </ListItem>
 
-          <Chip sx={{marginTop:2}} color='primary' variant='solid'>⭐Receive</Chip>
+          <Chip sx={{marginTop:2, boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.25)'}} color='primary' variant='solid'>Receive</Chip>
           <ListItem component={Link} to='/selection'>
             <ListItemButton>
               <LocalShippingIcon />
@@ -190,7 +198,7 @@ export default function Sidebar() {
               </List>
             </Toggler>
           </ListItem>
-          <Chip sx={{marginTop:2}} color='primary' variant='solid'>⭐Invoice</Chip>
+          <Chip sx={{marginTop:2, boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.25)'}} color='warning' variant='solid'>Invoice</Chip>
           <ListItem component={Link} to='/scanner' >
             
             <ListItemButton>
@@ -220,14 +228,15 @@ export default function Sidebar() {
                 <ListItem sx={{mt:0.5}} component={Link} to='/scan_pending'>
                   <ListItemButton>Pending Invoice Scanning</ListItemButton>
                 </ListItem>
-                <ListItem component={Link} to='/complete'>
+                <ListItem component={Link} to='/scan_complete'>
                   <ListItemButton>Transaction history</ListItemButton>
                 </ListItem>
               </List>
             </Toggler>
           </ListItem>
 
-          <Chip sx={{marginTop:2}} color='primary' variant='outlined'>Maintenance</Chip>
+          <Chip sx={{marginTop:2, boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.25)',backgroundColor: 'purple', // Set your desired purple color
+    color: 'white'}} >Maintenance</Chip>
           <ListItem component={Link} to='/supplier' >
             <ListItemButton>
               <SettingsIcon />
@@ -238,11 +247,13 @@ export default function Sidebar() {
             
           </ListItem>
 
-          <ListItem component={Link} to='/supplier' >
+          
+
+          <ListItem component={Link} to='/admin' >
             <ListItemButton>
-              <PeopleAltIcon />
+              <BrightnessAutoRoundedIcon />
               <ListItemContent>
-                <Typography level="title-sm">Manage User</Typography>
+                <Typography level="title-sm">Admin Dashboard</Typography>
               </ListItemContent>
             </ListItemButton>
             
@@ -266,16 +277,12 @@ export default function Sidebar() {
       </Box>
       <Divider />
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-        <Avatar
-          variant="outlined"
-          size="sm"
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-        />
+        <Avatar >{id.username[0]}</Avatar>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Law wai peng</Typography>
-          <Typography level="body-xs">law.waipeng@sony.com</Typography>
+          <Typography level="title-sm">{id.username}</Typography>
+          <Typography level="body-xs">{id.StaffID}</Typography>
         </Box>
-        <IconButton size="sm" variant="plain" color="neutral">
+        <IconButton size="sm" variant="plain" color="neutral" onClick={handleLogout}>
           <LogoutRoundedIcon />
         </IconButton>
       </Box>

@@ -12,6 +12,8 @@ import { Link as RouterLink } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Sidebar from "../components/Sidebar";
 import CardContent from "@mui/joy/CardContent";
@@ -65,7 +67,7 @@ export interface Dataset {
 }
 
 export interface EtaWithinRange {
-  hour:'number';
+  hour: "number";
   count: number;
   receiveID: number;
   RefNo: string;
@@ -88,7 +90,7 @@ export interface EtaWithinRange {
   BatchID: string;
   Buyer: string;
   reg_date: string;
-  RefNos : string [];
+  RefNos: string[];
 }
 
 export default function JoyOrderDashboardTemplate() {
@@ -102,6 +104,7 @@ export default function JoyOrderDashboardTemplate() {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      
       try {
         const response = await axios.get("/api/countItem.php");
         setRows(response.data.data);
@@ -123,10 +126,15 @@ export default function JoyOrderDashboardTemplate() {
   const maxCount = Math.max(...hourlyData.map((d) => d.count), 0);
   const currentHour = new Date().getHours();
 
- 
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
+      <ToastContainer
+        position="top-center"
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+      />
       <Box sx={{ display: "flex", minHeight: "100dvh" }}>
         <Header />
         <Sidebar />
@@ -200,14 +208,25 @@ export default function JoyOrderDashboardTemplate() {
                 <Card sx={{ height: 350 }}>
                   <CardOverflow>
                     <AspectRatio ratio="2.8" sx={{ padding: 1 }}>
-                      <img src={"https://st3.depositphotos.com/13015664/35972/v/450/depositphotos_359726642-stock-illustration-yellow-cartoon-delivery-van-city.jpg"} style={{top:0,position:'absolute',marginBottom:10,}} />
+                      <img
+                        src={
+                          "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fc3585133-390c-45d3-962f-e50285206f8a_800x600.gif"
+                        }
+                        style={{
+                          top: 0,
+                          position: "absolute",
+                          marginBottom: 10,
+                        }}
+                      />
                     </AspectRatio>
                   </CardOverflow>
                   <CardOverflow>
                     <Divider />
                   </CardOverflow>
                   <CardContent>
-                    <Typography level="title-lg">Previous Pending History</Typography>
+                    <Typography level="title-lg">
+                      Previous Pending History
+                    </Typography>
                   </CardContent>
                   <Sheet
                     sx={{
@@ -228,7 +247,7 @@ export default function JoyOrderDashboardTemplate() {
                         }}
                       >
                         <Chip
-                          variant="outlined"
+                          variant="solid"
                           color="danger"
                           size="sm"
                           sx={{
@@ -310,33 +329,45 @@ export default function JoyOrderDashboardTemplate() {
                           )}
                           {incoming.map((row) => (
                             <ListItem>
-                              <ListItemButton component={RouterLink}
-                              to="/receiving"
-                              state={{
-                                RefNo: row.RefNos,
-                              }}>
-                              <Card
-                                sx={{ width: 500 }}
-                                color="primary"
-                                variant="soft"
+                              <ListItemButton
+                                component={RouterLink}
+                                to="/receiving"
+                                state={{
+                                  RefNo: row.RefNos,
+                                }}
                               >
-                                <Typography level="title-sm">
-                                  {row.Supplier}
-                                </Typography>
-                                <CardContent>
+                                <Card
+                                  sx={{ width: 500 }}
+                                  color="primary"
+                                  variant="soft"
+                                >
                                   <Stack
                                     direction="row"
-                                    justifyContent="space-between"
+                                    gap={5}
+                                    sx={{ justifyContent: "space-between" }}
                                   >
-                                    <Typography level="body-sm">
-                                      {row.count} items
+                                    <Typography level="title-sm">
+                                      {row.Supplier}
                                     </Typography>
                                     <Typography level="body-sm">
-                                      {row.hour}:00
+                                      {today}
                                     </Typography>
                                   </Stack>
-                                </CardContent>
-                              </Card></ListItemButton>
+                                  <CardContent>
+                                    <Stack
+                                      direction="row"
+                                      justifyContent="space-between"
+                                    >
+                                      <Typography level="body-sm">
+                                        {row.count} items
+                                      </Typography>
+                                      <Typography level="body-sm">
+                                        {row.hour}:00
+                                      </Typography>
+                                    </Stack>
+                                  </CardContent>
+                                </Card>
+                              </ListItemButton>
                             </ListItem>
                           ))}
                         </List>
@@ -351,10 +382,8 @@ export default function JoyOrderDashboardTemplate() {
                 <Card
                   variant="outlined"
                   sx={{
-                    
                     maxHeight: 350,
                     height: 350,
-                    
                   }}
                 >
                   <Sheet
@@ -391,34 +420,47 @@ export default function JoyOrderDashboardTemplate() {
                           )}
                           {past.map((row) => (
                             <ListItem>
-                              <ListItemButton component={RouterLink}
-                              to="/receiving"
-                              state={{
-                                RefNo: row.RefNos,
-                            
-                              }}>
-                              <Card
-                                sx={{ width: 500 }}
-                                color="danger"
-                                variant="soft"
+                              <ListItemButton
+                                component={RouterLink}
+                                to="/receiving"
+                                state={{
+                                  RefNo: row.RefNos,
+                                }}
                               >
-                                <Typography level="title-sm">
-                                  {row.Supplier}
-                                </Typography>
-                                <CardContent>
+                                <Card
+                                  sx={{ width: 500 }}
+                                  color="danger"
+                                  variant="soft"
+                                >
                                   <Stack
                                     direction="row"
-                                    justifyContent="space-between"
+                                    gap={5}
+                                    sx={{ justifyContent: "space-between" }}
                                   >
-                                    <Typography level="body-sm">
-                                      {row.count} items
+                                    <Typography level="title-sm">
+                                      {row.Supplier}
                                     </Typography>
                                     <Typography level="body-sm">
-                                      {row.hour}:00
+                                      {today}
                                     </Typography>
                                   </Stack>
-                                </CardContent>
-                              </Card></ListItemButton>
+
+                                  <CardContent>
+                                    <Stack
+                                      direction="row"
+                                      justifyContent="space-between"
+                                    >
+                                      <Typography level="body-sm">
+                                        {row.count} items
+                                      </Typography>
+
+                                      <Typography level="body-sm">
+                                        {row.hour}:00
+                                      </Typography>
+                                    </Stack>
+                                  </CardContent>
+                                </Card>
+                              </ListItemButton>
                             </ListItem>
                           ))}
                         </List>
@@ -428,12 +470,19 @@ export default function JoyOrderDashboardTemplate() {
                 </Card>
               </Item>
             </Grid>
-            <Grid xs={8} sx={{ mr: 1.0 }}>
+            <Grid xs={10} sx={{}}>
               <Item>
-                <Card variant="outlined" sx={{ width: 800, maxHeight: 150 }}>
+                <Card
+                  variant="outlined"
+                  sx={{
+                    alignContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                  }}
+                >
                   <CardContent>
                     <Typography level="title-lg">
-                      Hourly Delivery Tracker{" "}
+                      Partner Pending Delivery Status{" "}
                     </Typography>
                     <Typography level="body-sm">{today}</Typography>
                   </CardContent>
@@ -449,68 +498,72 @@ export default function JoyOrderDashboardTemplate() {
                       justifyContent: "space-between",
                     }}
                   >
-                    <div>
-                      <div className="grid">
-                      {Array.from({ length: 24 }).map((_, hour) => {
-                        //@ts-ignore
-                        const cellData = hourlyData.find(d => d.hour === hour) || { hour, count: 0 };
-                        const intensity = cellData.count / maxCount;
-                        let backgroundColor, textColor, cellClass = '';
-                        
+                   <div>
+  <div className="grid">
+    {Array.from({ length: 24 }).map((_, hour) => {
+      //@ts-ignore
+      const cellData = hourlyData.find((d) => d.hour === hour) || { hour, count: 0 };
+      const intensity = cellData.count / maxCount;
+      let backgroundColor,
+        textColor,
+        cellClass = "";
 
-                        if (hour < currentHour) {
-                            backgroundColor = `rgba(255, 0, 0, ${intensity})`; // Red color for past hours
-                            textColor = intensity > 0.5 ? 'white' : 'black';}
-                        else if (hour === currentHour) {
-                          backgroundColor = `rgba(255, 234, 153, 3)`; // Yellow color for current hour
-                          cellClass = 'blink'; // Add class for blinking
-                            
-                        } else {
-                            backgroundColor = `rgba(0, 0, 251, ${intensity})`; // Blue color for current and future hours
-                            textColor = intensity > 0.5 ? 'white' : 'black';
-                        }
+      if (hour < currentHour) {
+        if (cellData.count === 0) {
+          backgroundColor = 'rgba(0, 255, 0, 0.5)'; // Green color for past hours with count 0
+        } else {
+          backgroundColor = `rgba(255, 0, 0, 0.5)`; // Red color for past hours
+        }
+        textColor = intensity >= 0.5 ? "white" : "black";
+      } else if (hour === currentHour) {
+        backgroundColor = `rgba(255, 234, 153, 3)`; // Yellow color for current hour
+        cellClass = "blink"; // Add class for blinking
+      }
 
-                        return (<Sheet>
+      return (
+        <Sheet key={hour}>
+          <div
+            className={`cell ${cellClass}`}
+            style={{ backgroundColor, color: textColor }}
+          >
+            <div>{cellData.count}</div>
+          </div>
+          <div className="hour">{hour}:00</div>
+        </Sheet>
+      );
+    })}
+  </div>
+</div>
 
-                       
-                            <div
-                                key={hour}
-                                className={`cell ${cellClass}`}
-                                style={{ backgroundColor, color: textColor}}
-                            >
-                                <div>{cellData.count}</div>
-                                
-                            </div><div className="hour">{hour}:00</div>
-                            </Sheet>
-                        );
-                    })}
-                      </div>
-                    </div>
                   </Box>
                 </Card>
               </Item>
             </Grid>
-            <Grid xs={3}>
+            <Grid xs={2}>
               <Item>
-                <Card sx={{ height: 150,width:370 }}>
-                  <CardContent sx={{position:'flex',alignSelf:'center',justifyContent:'center',justifyItems:'center',}}>
-                    <Typography level="title-lg">Legend</Typography>
-                    <ActivityLegend maxCount={maxCount} />
-                    <Box component="footer" sx={{ }}>
-            <Typography level="body-xs" textAlign="center">
-              Copyright © MHC Fahmi Rachel {new Date().getFullYear()}
-            </Typography>
-          </Box>
+                <Card sx={{}}>
+                  <CardContent
+                    sx={{
+                      position: "flex",
+                      alignSelf: "center",
+                      justifyContent: "center",
+                      justifyItems: "center",
+                    }}
+                  >
+                    {/* <Typography level="title-lg">Legend</Typography>
+                    <ActivityLegend maxCount={maxCount} /> */}
+                    <Box component="footer" sx={{}}>
+                      <Typography level="body-xs" textAlign="center">
+                        Copyright © MHC Fahmi Rachel {new Date().getFullYear()}
+                      </Typography>
+                    </Box>
                   </CardContent>
-                  
                 </Card>
               </Item>
             </Grid>
           </Grid>
         </Box>
-        
       </Box>
-     
     </CssVarsProvider>
   );
 }

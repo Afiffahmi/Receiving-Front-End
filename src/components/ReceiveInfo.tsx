@@ -724,7 +724,7 @@ export default function OrderTable() {
             autoFocus={focus}
           />
           
-            <Barcode value={'complete'} width={2} height={30} background="#0B6BCB" fontOptions="color: #ffffff"/>
+            <Barcode value={'complete'} width={2} height={30} background="#0B6BCB" fontOptions="color: #ffffff" displayValue= "false"/>
           
           
           

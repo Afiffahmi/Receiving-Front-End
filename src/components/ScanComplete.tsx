@@ -118,17 +118,15 @@ export default function OrderTable() {
   const [supplier, setSupplier] = React.useState("");
   const [ETA, setETA] = React.useState("");
   const [Date, setDate] = React.useState("");
-  const [suppliers,setSuppliers] = React.useState<Supplier[]>([]);
+  const [suppliers, setSuppliers] = React.useState<Supplier[]>([]);
   const location = useLocation();
-  
-  const item = location.state;
 
- 
+  const item = location.state;
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/pendingInvoice.php", {
+        const response = await axios.get("/api/scanComplete.php", {
           params: item,
         });
         setRows(response.data.data);
@@ -142,16 +140,16 @@ export default function OrderTable() {
 
   const fetchSuppliers = async () => {
     try {
-        const response = await axios.get('/api/supplierData.php');
-        setSuppliers(response.data.data);
+      const response = await axios.get("/api/supplierData.php");
+      setSuppliers(response.data.data);
     } catch (error) {
-        console.error('Error fetching suppliers:', error);
+      console.error("Error fetching suppliers:", error);
     }
   };
 
   const fetchData = async (input: string) => {
     try {
-      const response = await axios.get("/api/pendingInvoice.php", {
+      const response = await axios.get("/api/scanComplete.php", {
         params: {
           ...item,
           part_no: input,
@@ -174,7 +172,7 @@ export default function OrderTable() {
   ) => {
     setSupplier(newValue!);
     try {
-      const response = await axios.get("/api/pendingInvoice.php", {
+      const response = await axios.get("/api/scanComplete.php", {
         params: {
           ...item,
           supplier: newValue,
@@ -195,7 +193,7 @@ export default function OrderTable() {
     setDate(input);
 
     try {
-      const response = await axios.get("/api/pendingInvoice.php", {
+      const response = await axios.get("/api/scanComplete.php", {
         params: {
           ...item,
           date: input,
@@ -222,7 +220,7 @@ export default function OrderTable() {
       eta_to: input,
     });
     try {
-      const response = await axios.get("/api/pendingInvoice.php", {
+      const response = await axios.get("/api/scanComplete.php", {
         params: {
           ...item,
           date: Date,
@@ -242,7 +240,7 @@ export default function OrderTable() {
   const fetchEta = async (input: string) => {
     setETA(input);
     try {
-      const response = await axios.get("/api/pendingInvoice.php", {
+      const response = await axios.get("/api/scanComplete.php", {
         params: {
           ...item,
           date: Date,
@@ -261,7 +259,6 @@ export default function OrderTable() {
 
   const renderFilters = () => (
     <React.Fragment>
-      
       <FormControl size="sm">
         <FormLabel>Date</FormLabel>
         <Input type="date" onChange={(e) => fetchDate(e.target.value)} />
@@ -274,10 +271,12 @@ export default function OrderTable() {
           placeholder="Filter by supplier"
           slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
         >
-         <Option value="">All</Option>
+          <Option value="">All</Option>
           {suppliers.map((supplier) => (
-            <Option key={supplier.id} value={supplier.SupplierFirstName}>{supplier.SupplierName}</Option>
-           ))}
+            <Option key={supplier.id} value={supplier.SupplierFirstName}>
+              {supplier.SupplierName}
+            </Option>
+          ))}
         </Select>
       </FormControl>
       <FormControl size="sm">
@@ -288,18 +287,18 @@ export default function OrderTable() {
         <FormLabel>ETA(to)</FormLabel>
         <Input type="time" onChange={(e) => fetchEtaTo(e.target.value)} />
       </FormControl>
-      
+
       <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for receiving</FormLabel>
-          <Input
-            size="sm"
-            placeholder="Search by Part Number"
-            startDecorator={<SearchIcon />}
-            onChange={(e) => {
-              fetchData(e.target.value);
-            }}
-          />
-        </FormControl>
+        <FormLabel>Search for invoice</FormLabel>
+        <Input
+          size="sm"
+          placeholder="Search by Part Number"
+          startDecorator={<SearchIcon />}
+          onChange={(e) => {
+            fetchData(e.target.value);
+          }}
+        />
+      </FormControl>
     </React.Fragment>
   );
   return (
@@ -317,8 +316,6 @@ export default function OrderTable() {
           },
         }}
       >
-        
-
         {renderFilters()}
       </Box>
 
@@ -351,28 +348,6 @@ export default function OrderTable() {
         >
           <thead>
             <tr>
-              <th
-                style={{ width: 48, textAlign: "center", padding: "12px 6px" }}
-              >
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== rows.length
-                  }
-                  checked={selected.length === rows.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked ? rows.map((row) => row.RefNo) : []
-                    );
-                  }}
-                  color={
-                    selected.length > 0 || selected.length === rows.length
-                      ? "primary"
-                      : undefined
-                  }
-                  sx={{ verticalAlign: "text-bottom" }}
-                />
-              </th>
               <th style={{ width: 60, padding: "12px 6px" }}>
                 <Link
                   underline="none"
@@ -398,7 +373,7 @@ export default function OrderTable() {
               <th style={{ width: 50, padding: "12px 6px" }}>PO No</th>
               <th style={{ width: 50, padding: "12px 6px" }}>Qty</th>
               <th style={{ width: 50, padding: "12px 6px" }}>WS CD</th>
-              
+
               <th style={{ width: 80, padding: "12px 6px" }}>Date</th>
               <th style={{ width: 50, padding: "12px 6px" }}>ETA</th>
               <th style={{ width: 70, padding: "12px 6px" }}>JOC/Plan lot</th>
@@ -408,22 +383,6 @@ export default function OrderTable() {
           <tbody>
             {stableSort(rows, getComparator(order, "ETA")).map((row) => (
               <tr key={row.RefNo}>
-                <td style={{ textAlign: "center", width: 120 }}>
-                  <Checkbox
-                    size="sm"
-                    checked={selected.includes(row.RefNo)}
-                    color={selected.includes(row.RefNo) ? "primary" : undefined}
-                    onChange={(event) => {
-                      setSelected((ids) =>
-                        event.target.checked
-                          ? ids.concat(row.RefNo)
-                          : ids.filter((itemId) => itemId !== row.RefNo)
-                      );
-                    }}
-                    slotProps={{ checkbox: { sx: { textAlign: "left" } } }}
-                    sx={{ verticalAlign: "text-bottom" }}
-                  />
-                </td>
                 <td>
                   <Typography level="body-xs">{row.RefNo}</Typography>
                 </td>
@@ -445,7 +404,6 @@ export default function OrderTable() {
                 <td>
                   <Typography level="body-xs">{row.WsCd}</Typography>
                 </td>
-                
 
                 <td>
                   <Typography level="body-xs">{row.Date}</Typography>
@@ -457,7 +415,9 @@ export default function OrderTable() {
                   <Typography level="body-xs">{row.JOCPlanLot}</Typography>
                 </td>
                 <td>
-                  <Chip variant='soft' color='success'>Ready Scan</Chip>
+                  <Chip variant="solid" color="success">
+                    Matching
+                  </Chip>
                 </td>
               </tr>
             ))}

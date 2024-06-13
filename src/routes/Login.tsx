@@ -46,7 +46,7 @@ function ColorSchemeToggle(props: IconButtonProps) {
       variant="outlined"
       disabled={!mounted}
       onClick={(event) => {
-        setMode(mode === "light" ? "dark" : "light");
+        setMode(mode === "light" ? "light" : "light");
         onClick?.(event);
       }}
       {...other}
@@ -59,7 +59,7 @@ function ColorSchemeToggle(props: IconButtonProps) {
 export default function JoySignInSideTemplate() {
   const navigate = useNavigate();
   return (
-    <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
+    <CssVarsProvider defaultMode="light" disableTransitionOnChange>
       <CssBaseline />
       <GlobalStyles
         styles={{

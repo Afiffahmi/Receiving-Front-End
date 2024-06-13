@@ -6,7 +6,7 @@ import Box from "@mui/joy/Box";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import Link from "@mui/joy/Link";
 import Typography from "@mui/joy/Typography";
-import { useLocation, Link as RouteLink } from "react-router-dom";
+import { useLocation, Link as RouteLink, useNavigate } from "react-router-dom";
 import ActivityLegend from "../ActivityLegend";
 import { Link as RouterLink } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -26,11 +26,6 @@ import Header from "../components/Header";
 import Card from "@mui/joy/Card";
 import { Divider, Chip, Stack, Button,ButtonGroup } from "@mui/joy";
 import axios from "axios";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
-import ListSubheader from "@mui/joy/ListSubheader";
-import ListItemButton from "@mui/joy/ListItemButton";
 import "../ActivityGrid.css";
 
 const Item = styled(Sheet)(({ theme }) => ({
@@ -46,6 +41,7 @@ const Item = styled(Sheet)(({ theme }) => ({
 
 export default function JoyOrderDashboardTemplate() {
   const authorize = localStorage.getItem("token");
+  const navigate = useNavigate();
   //@ts-ignore
   const checker = JSON.parse(authorize);
   React.useEffect(() => 
@@ -53,7 +49,8 @@ export default function JoyOrderDashboardTemplate() {
 
     //@ts-ignore
     if(checker.type !== '3'){
-      alert('youre not suppose to be here!!')
+      alert('you re not suppose to be here!!')
+      navigate('/dashboard')
     }
   },[])
 
@@ -66,6 +63,7 @@ export default function JoyOrderDashboardTemplate() {
         newestOnTop={false}
         closeOnClick
       />
+      
       <Box sx={{ display: "flex", minHeight: "100dvh" }}>
         <Header />
         <Sidebar />
@@ -131,6 +129,7 @@ export default function JoyOrderDashboardTemplate() {
 
            
           </Box>
+         
           <Grid container spacing={6} sx={{ flexGrow: 1 }}>
             <Grid xs={3}>
               <Item>
@@ -139,7 +138,7 @@ export default function JoyOrderDashboardTemplate() {
                     <AspectRatio ratio="2.8" sx={{ padding: 1 }}>
                       <img
                         src={
-                          "https://cdn.dribbble.com/users/26878/screenshots/3829900/49-settings.gif"
+                          "https://imgvisuals.com/cdn/shop/products/animated-load-time-gradient-ui-icon-941101.gif?v=1697071131"
                         }
                         style={{
                           top: 0,
@@ -164,7 +163,7 @@ export default function JoyOrderDashboardTemplate() {
                       m: 1,
                     }}
                   > <Stack spacing={2}>
-                    <Button>
+                    <Button onClick={()=>{navigate('/log')}}>
                       View Logs
                     </Button>
                     </Stack>
@@ -206,8 +205,10 @@ export default function JoyOrderDashboardTemplate() {
                     }}
                   >
                     <Stack spacing={2}>
-                      <Button>Approve User</Button>
-                      <Button color='warning'>Update User</Button>
+                      
+                      <Button onClick={()=>{
+                        navigate('/update_user')
+                      }}>Update User</Button>
                       
                       
                     </Stack>
@@ -249,8 +250,10 @@ export default function JoyOrderDashboardTemplate() {
                     }}
                   >
                     <Stack spacing={2}>
-                      <Button>Add Order</Button>
-                      <Button color='warning'>Modify Existing Order</Button>
+                      <Button onClick={()=>navigate('/add_order')}>Add Order</Button>
+                      <Button variant='outlined' onClick={
+                        ()=>navigate('/modify_order')
+                      }>Modify Existing Order</Button>
                       
                       
                     </Stack>
@@ -292,9 +295,13 @@ export default function JoyOrderDashboardTemplate() {
                     }}
                   >
                     <Stack spacing={2}>
-                      <Button>Modify Matches Invoices</Button>
+                      <Button
+                      onClick={()=>navigate('/modify_inv')}
+                      >Modify Matches Invoices</Button>
                       
-                      
+                      <Button variant='outlined'
+                      onClick={()=>navigate('/scan_complete')}
+                      >Matches Invoices History</Button>
                     </Stack>
                    
                   </Sheet>

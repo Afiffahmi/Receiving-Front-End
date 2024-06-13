@@ -228,13 +228,13 @@ export default function Sidebar() {
                 <ListItem sx={{mt:0.5}} component={Link} to='/scan_pending'>
                   <ListItemButton>Pending Invoice Scanning</ListItemButton>
                 </ListItem>
-                <ListItem component={Link} to='/scan_complete'>
-                  <ListItemButton>Transaction history</ListItemButton>
+                <ListItem component={Link} to='#'>
+                  <ListItemButton>Data pending input</ListItemButton>
                 </ListItem>
               </List>
             </Toggler>
           </ListItem>
-
+          {id.type === "3" ? (<Box>
           <Chip sx={{marginTop:2, boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.25)',backgroundColor: 'purple', // Set your desired purple color
     color: 'white'}} >Maintenance</Chip>
           <ListItem component={Link} to='/supplier' >
@@ -257,7 +257,7 @@ export default function Sidebar() {
               </ListItemContent>
             </ListItemButton>
             
-          </ListItem>
+          </ListItem></Box>) : null}
 
         </List>
 

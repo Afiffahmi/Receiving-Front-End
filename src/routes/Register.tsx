@@ -180,6 +180,7 @@ export default function JoySignInSideTemplate() {
                     const response = await axios.post(url, JSON.stringify(data), {
                       headers: headers,
                     });
+                    console.log(response.data);
                   if(response.data.message){
                     alert(response.data.message);
                   }else{
@@ -223,7 +224,7 @@ export default function JoySignInSideTemplate() {
                     </Link>
                   </Box>
                   <Button type="submit" fullWidth>
-                    Sign in
+                    Sign up
                   </Button>
                 </Stack>
               </form>

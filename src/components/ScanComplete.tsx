@@ -8,6 +8,7 @@ import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import Link from "@mui/joy/Link";
 import Input from "@mui/joy/Input";
+import { useNavigate } from "react-router-dom";
 
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
@@ -120,8 +121,13 @@ export default function OrderTable() {
   const [Date, setDate] = React.useState("");
   const [suppliers, setSuppliers] = React.useState<Supplier[]>([]);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const item = location.state;
+  const authorize = localStorage.getItem("token");
+
+  //@ts-ignore
+  const checker = JSON.parse(authorize);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -137,6 +143,14 @@ export default function OrderTable() {
     fetchData();
     fetchSuppliers();
   }, []);
+
+  React.useEffect(() => {
+    //@ts-ignore
+    if(checker.type !== '3'){
+      alert('youre not suppose to be here!!')
+      navigate('/dashboard')
+    }
+  },[])
 
   const fetchSuppliers = async () => {
     try {
@@ -439,7 +453,7 @@ export default function OrderTable() {
       >
         <Button
           component={RouterLink}
-          to="/scanner"
+          to="/admin"
           size="sm"
           variant="outlined"
           color="neutral"

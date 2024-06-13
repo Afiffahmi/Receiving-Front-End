@@ -180,16 +180,25 @@ export default function JoySignInSideTemplate() {
                         headers: headers,
                       }
                     );
+                    console.log(response.data);
                     if (response.data.error) {
                       alert(response.data.error);
-                    } else {
+                      
+                    } else if(response.data.approval == 0){
+                      alert("Wait for approval from admin");
+
+                     }
+                    else{
                       localStorage.setItem(
                         "token",
                         JSON.stringify(response.data)
                       );
+
+                     
                       navigate("/dashboard", { replace: true });
                       toast.success("Login Successful", {});
                     }
+                    
                   }
                 }}
               >

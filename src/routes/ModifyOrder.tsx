@@ -2,21 +2,22 @@ import * as React from 'react';
 import { CssVarsProvider } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
+
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
+import { useLocation } from 'react-router-dom';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 import Sidebar from '../components/Sidebar';
+import AllTable from '../components/ModifyTable';
 import Header from '../components/Header';
-import SelectOrder from '../components/SelectOrder';
 
 export default function JoyOrderDashboardTemplate() {
 
-
+  
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
@@ -60,14 +61,23 @@ export default function JoyOrderDashboardTemplate() {
               <Link
                 underline="hover"
                 color="neutral"
-                href="#some-link"
+                href="/dashboard"
                 fontSize={12}
                 fontWeight={500}
               >
                 Dashboard
               </Link>
+              <Link
+                underline="hover"
+                color="neutral"
+                href="/admin"
+                fontSize={12}
+                fontWeight={500}
+              >
+                Admin
+              </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Receive Order
+                Modify Order
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -83,11 +93,11 @@ export default function JoyOrderDashboardTemplate() {
             }}
           >
             <Typography level="h2" component="h1">
-              Receive Order
+              Modify Order
             </Typography>
 
           </Box>
-            <SelectOrder />
+          <AllTable />
         </Box>
       </Box>
     </CssVarsProvider>

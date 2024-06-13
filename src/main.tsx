@@ -26,6 +26,11 @@ import Protected from "./components/Protected";
 import Register from "./routes/Register";
 import FileUpload from "./components/FileUpload";
 import Admin from "./routes/Admin";
+import UpdateUser from './routes/UpdateUser'
+import ModifyOrder from './routes/ModifyOrder'
+import AddOrder from './routes/AddOrder'
+import ViewLog from './routes/ViewLog'
+import ModifyInv from './routes/ModifyInv'
 
 const rootContainer = document.getElementById("root");
 
@@ -113,6 +118,23 @@ const router = createBrowserRouter([
   {
     path:'/admin',
     element: <Protected Component={Admin}/>
+  },
+  {
+    path:'/update_user',
+    element: <Protected Component={UpdateUser}/>
+  },
+  {
+    path:'/modify_order',
+    element: <Protected Component={ModifyOrder}/>
+  },{
+    path:'/add_order',
+    element: <Protected Component={AddOrder}/>
+  },{
+    path:'/log',
+    element: <Protected Component={ViewLog}/>
+  },{
+    path:'/modify_inv',
+    element: <Protected Component={ModifyInv}/>
   }
 ]);
 

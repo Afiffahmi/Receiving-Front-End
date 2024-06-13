@@ -77,8 +77,9 @@ export default function JoyOrderDashboardTemplate() {
   React.useEffect(() => 
   {
     const response = axios.get("/api/userData.php");
-
+    
     response.then((res) => {
+      
       setRows(res.data.data);
     });
 
